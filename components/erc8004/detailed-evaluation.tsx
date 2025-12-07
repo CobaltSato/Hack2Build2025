@@ -99,9 +99,7 @@ export function DetailedEvaluation({ agentId, agentName, onClose }: DetailedEval
         normalizedFetch,
         client,
         wallet,
-        {
-          maxValue: PAYMENT_AMOUNTS.EVALUATION_VIEW?.bigInt || BigInt(100000), // Fallback: 0.10 USDC
-        }
+        PAYMENT_AMOUNTS.EVALUATION_VIEW?.bigInt || BigInt(100000) // Fallback: 0.10 USDC
       );
 
       const response = await fetchWithPay(API_ENDPOINTS.EVALUATION_VIEW, {
@@ -109,7 +107,7 @@ export function DetailedEvaluation({ agentId, agentName, onClose }: DetailedEval
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ agentId }),
+        body: JSON.stringify({ agentId, agentName }),
       });
 
       if (response.ok) {
