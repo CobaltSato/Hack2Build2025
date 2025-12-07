@@ -35,7 +35,7 @@ export function AgentRegistration({ onAgentRegistered }: AgentRegistrationProps)
     agentName: "",
     cardURI: "",
   });
-  const [registeredAgent, setRegisteredAgent] = useState<{ id: number; name: string; domain: string; txHash: string } | null>(null);
+  const [registeredAgent, setRegisteredAgent] = useState<{ id: number; name: string; domain: string; txHash: string; snowtraceUrl?: string } | null>(null);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
   const validateAgentName = (name: string) => {
@@ -121,6 +121,8 @@ export function AgentRegistration({ onAgentRegistered }: AgentRegistrationProps)
         onSuccess: (result) => {
           console.log('Transaction successful:', result);
           
+          const snowtraceUrl = `https://c.testnet.snowtrace.io/tx/${result.transactionHash}`;
+          
           // Generate mock agent ID (in real app, you'd parse the transaction receipt for the returned token ID)
           const agentId = Date.now();
           
@@ -129,10 +131,14 @@ export function AgentRegistration({ onAgentRegistered }: AgentRegistrationProps)
             name: formData.agentName,
             domain: formData.agentName,
             txHash: result.transactionHash,
+            snowtraceUrl: snowtraceUrl,
           };
 
           setRegisteredAgent(newAgent);
           onAgentRegistered?.(newAgent);
+          
+          // Open Snowtrace link in new tab
+          window.open(snowtraceUrl, '_blank');
 
           // Reset form
           setFormData({ agentName: "", cardURI: "" });
@@ -317,14 +323,23 @@ export function AgentRegistration({ onAgentRegistered }: AgentRegistrationProps)
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="text-xs text-gray-600">Transaction:</span>
-                  <a 
-                    href={`https://testnet.snowtrace.io/tx/${registeredAgent.txHash}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded hover:bg-blue-100 border border-blue-200"
-                  >
-                    View on Snowtrace →
-                  </a>
+                  {registeredAgent.snowtraceUrl ? (
+                    <button
+                      onClick={() => window.open(registeredAgent.snowtraceUrl, '_blank')}
+                      className="text-xs bg-gradient-to-r from-blue-500 to-blue-600 text-white px-3 py-1 rounded hover:from-blue-600 hover:to-blue-700 transition-colors"
+                    >
+                      🔍 View on Snowtrace
+                    </button>
+                  ) : (
+                    <a 
+                      href={`https://testnet.snowtrace.io/tx/${registeredAgent.txHash}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded hover:bg-blue-100 border border-blue-200"
+                    >
+                      View on Snowtrace →
+                    </a>
+                  )}
                 </div>
               </div>
               
