@@ -7,7 +7,7 @@ import { wrapFetchWithPayment } from "thirdweb/x402";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Star, CreditCard, CheckCircle, Loader2, AlertCircle, DollarSign } from "lucide-react";
+import { Star, CreditCard, CheckCircle, Loader2, AlertCircle, DollarSign, Mountain, Snowflake } from "lucide-react";
 import { createNormalizedFetch } from "@/lib/payment";
 import { AVALANCHE_FUJI_CHAIN_ID, PAYMENT_AMOUNTS } from "@/lib/constants";
 
@@ -38,7 +38,7 @@ export function FeedbackSystem({ agents = [] }: FeedbackSystemProps) {
     message: string;
   }>({
     isAuthorized: false,
-    message: "評価投稿には事前認証が必要です",
+    message: "Pre-authorization required for evaluation submission",
   });
 
   // Mock authorization check
@@ -46,7 +46,7 @@ export function FeedbackSystem({ agents = [] }: FeedbackSystemProps) {
     if (!clientId || !serverId) {
       setAuthorizationStatus({
         isAuthorized: false,
-        message: "クライアントIDとサーバーIDを入力してください",
+        message: "Please enter both client ID and server ID",
       });
       return;
     }
@@ -57,18 +57,18 @@ export function FeedbackSystem({ agents = [] }: FeedbackSystemProps) {
     // Mock: assume authorization exists for demonstration
     setAuthorizationStatus({
       isAuthorized: true,
-      message: `エージェント #${clientId} → #${serverId} の評価が許可されています`,
+      message: `Evaluation authorized: Agent #${clientId} → #${serverId}`,
     });
   };
 
   const handleSubmitFeedback = async () => {
     if (!wallet) {
-      alert("ウォレットを接続してください");
+      alert("Please connect your wallet");
       return;
     }
 
     if (!authorizationStatus.isAuthorized) {
-      alert("評価の認証を先に確認してください");
+      alert("Please check evaluation authorization first");
       return;
     }
 
@@ -106,7 +106,7 @@ export function FeedbackSystem({ agents = [] }: FeedbackSystemProps) {
         const result = await response.json();
         setSubmissionResult({
           success: true,
-          message: "フィードバックが正常に投稿されました！",
+          message: "Feedback submitted successfully!",
           txHash: result.txHash || "0x" + Math.random().toString(16).substr(2, 64),
         });
         
@@ -119,20 +119,20 @@ export function FeedbackSystem({ agents = [] }: FeedbackSystemProps) {
         });
         setAuthorizationStatus({
           isAuthorized: false,
-          message: "評価投稿には事前認証が必要です",
+          message: "Pre-authorization required for evaluation submission",
         });
       } else {
         const error = await response.json();
         setSubmissionResult({
           success: false,
-          message: `投稿に失敗しました: ${error.message || "不明なエラー"}`,
+          message: `Submission failed: ${error.message || "Unknown error"}`,
         });
       }
     } catch (error) {
       console.error("Feedback submission error:", error);
       setSubmissionResult({
         success: false,
-        message: `エラーが発生しました: ${error instanceof Error ? error.message : "不明なエラー"}`,
+        message: `Error occurred: ${error instanceof Error ? error.message : "Unknown error"}`,
       });
     } finally {
       setIsSubmitting(false);
@@ -142,35 +142,52 @@ export function FeedbackSystem({ agents = [] }: FeedbackSystemProps) {
   return (
     <div className="space-y-6">
       {/* Payment Info */}
-      <Card className="border-purple-200 bg-purple-50">
-        <CardContent className="p-4">
-          <div className="flex items-center space-x-3">
-            <DollarSign className="h-6 w-6 text-purple-600" />
+      <Card className="bg-gradient-to-r from-red-50 via-orange-50 to-red-50 border-red-200 shadow-lg">
+        <CardContent className="p-5">
+          <div className="flex items-center space-x-4">
+            <div className="p-3 bg-gradient-to-br from-red-500 to-orange-500 rounded-xl">
+              <DollarSign className="h-6 w-6 text-white" />
+            </div>
             <div>
-              <p className="font-medium text-purple-900">USDC支払い機能</p>
-              <p className="text-sm text-purple-700">
-                評価投稿には $0.05 USDC の支払いが必要です（スパム防止）
+              <div className="flex items-center gap-2 mb-1">
+                <p className="font-bold text-red-800">USDC Payment System</p>
+                <Snowflake className="h-4 w-4 text-red-500" />
+              </div>
+              <p className="text-sm text-red-700">
+                Evaluation submission requires $0.05 USDC payment (spam prevention)
               </p>
+              <div className="flex items-center gap-1 mt-1">
+                <Mountain className="h-3 w-3 text-red-500" />
+                <span className="text-xs text-red-600">Powered by Avalanche Network</span>
+              </div>
             </div>
           </div>
         </CardContent>
       </Card>
 
       {/* Authorization Step */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center space-x-2">
-            <CheckCircle className="h-5 w-5" />
-            <span>Step 1: 評価権限の確認</span>
+      <Card className="bg-gradient-to-br from-red-500/5 to-orange-500/10 border-red-200">
+        <CardHeader className="bg-gradient-to-r from-red-500/5 to-orange-500/5 border-b border-red-200">
+          <CardTitle className="flex items-center space-x-3">
+            <div className="p-2 bg-gradient-to-br from-red-500 to-red-600 rounded-xl">
+              <CheckCircle className="h-5 w-5 text-white" />
+            </div>
+            <div>
+              <span className="text-red-800">Step 1: Verify Evaluation Authorization</span>
+              <div className="flex items-center gap-2 mt-1">
+                <Mountain className="h-3 w-3 text-red-500" />
+                <span className="text-xs text-red-600">Avalanche ERC-8004</span>
+              </div>
+            </div>
           </CardTitle>
-          <CardDescription>
-            フィードバック投稿前に、評価権限があることを確認してください
+          <CardDescription className="text-red-700">
+            Confirm evaluation permissions before submitting feedback
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium mb-2">クライアントID（評価者）</label>
+              <label className="block text-sm font-medium mb-2">Client ID (Evaluator)</label>
               <select
                 value={feedbackData.clientId}
                 onChange={(e) => {
@@ -179,9 +196,9 @@ export function FeedbackSystem({ agents = [] }: FeedbackSystemProps) {
                     checkAuthorization(e.target.value, feedbackData.serverId);
                   }
                 }}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-red-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
               >
-                <option value="">選択してください</option>
+                <option value="">Please select</option>
                 {agents.map(agent => (
                   <option key={agent.id} value={agent.id.toString()}>
                     #{agent.id} - {agent.name}
@@ -191,7 +208,7 @@ export function FeedbackSystem({ agents = [] }: FeedbackSystemProps) {
             </div>
 
             <div>
-              <label className="block text-sm font-medium mb-2">サーバーID（評価対象）</label>
+              <label className="block text-sm font-medium mb-2">Server ID (Evaluation Target)</label>
               <select
                 value={feedbackData.serverId}
                 onChange={(e) => {
@@ -200,9 +217,9 @@ export function FeedbackSystem({ agents = [] }: FeedbackSystemProps) {
                     checkAuthorization(feedbackData.clientId, e.target.value);
                   }
                 }}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-red-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
               >
-                <option value="">選択してください</option>
+                <option value="">Please select</option>
                 {agents.map(agent => (
                   <option key={agent.id} value={agent.id.toString()}>
                     #{agent.id} - {agent.name}
@@ -228,19 +245,27 @@ export function FeedbackSystem({ agents = [] }: FeedbackSystemProps) {
       </Card>
 
       {/* Feedback Submission */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center space-x-2">
-            <Star className="h-5 w-5" />
-            <span>Step 2: フィードバック投稿</span>
+      <Card className="bg-gradient-to-br from-orange-500/5 to-red-500/10 border-orange-200">
+        <CardHeader className="bg-gradient-to-r from-orange-500/5 to-red-500/5 border-b border-orange-200">
+          <CardTitle className="flex items-center space-x-3">
+            <div className="p-2 bg-gradient-to-br from-orange-500 to-red-500 rounded-xl">
+              <Star className="h-5 w-5 text-white" />
+            </div>
+            <div>
+              <span className="text-orange-800">Step 2: Submit Feedback</span>
+              <div className="flex items-center gap-2 mt-1">
+                <Snowflake className="h-3 w-3 text-orange-500" />
+                <span className="text-xs text-orange-600">USDC Payment Required</span>
+              </div>
+            </div>
           </CardTitle>
-          <CardDescription>
-            USDCでの支払いを行い、評価を投稿します
+          <CardDescription className="text-orange-700">
+            Make USDC payment and submit evaluation
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div>
-            <label className="block text-sm font-medium mb-2">評価スコア (0-100)</label>
+            <label className="block text-sm font-medium mb-2">Evaluation Score (0-100)</label>
             <div className="flex items-center space-x-4">
               <input
                 type="range"
@@ -259,46 +284,51 @@ export function FeedbackSystem({ agents = [] }: FeedbackSystemProps) {
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-2">評価コメント</label>
+            <label className="block text-sm font-medium mb-2">Evaluation Comment</label>
             <textarea
               value={feedbackData.comment}
               onChange={(e) => setFeedbackData(prev => ({ ...prev, comment: e.target.value }))}
-              placeholder="評価の詳細内容を入力してください..."
+              placeholder="Please enter detailed evaluation content..."
               rows={4}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border border-orange-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
             />
             <p className="text-xs text-gray-500 mt-1">
-              この内容はハッシュ化されてブロックチェーンに保存されます
+              This content will be hashed and stored on the blockchain
             </p>
           </div>
 
-          <div className="bg-blue-50 p-4 rounded-lg">
-            <div className="flex items-center space-x-2 mb-2">
-              <CreditCard className="h-4 w-4 text-blue-600" />
-              <span className="font-medium text-blue-900">支払い情報</span>
+          <div className="bg-gradient-to-r from-red-50 via-orange-50 to-red-50 p-4 rounded-xl border border-red-200">
+            <div className="flex items-center space-x-3 mb-2">
+              <div className="p-2 bg-gradient-to-br from-red-500 to-orange-500 rounded-lg">
+                <CreditCard className="h-4 w-4 text-white" />
+              </div>
+              <span className="font-bold text-red-800">Payment Information</span>
             </div>
-            <p className="text-sm text-blue-700">
-              フィードバック投稿料: <strong>$0.05 USDC</strong>
+            <p className="text-sm text-red-700">
+              Feedback submission fee: <strong>$0.05 USDC</strong>
             </p>
-            <p className="text-xs text-blue-600 mt-1">
-              HTTP 402プロトコルにより自動的に処理されます
-            </p>
+            <div className="flex items-center gap-1 mt-1">
+              <Mountain className="h-3 w-3 text-red-500" />
+              <p className="text-xs text-red-600">
+                Automatically processed via HTTP 402 protocol
+              </p>
+            </div>
           </div>
 
           <Button 
             onClick={handleSubmitFeedback}
             disabled={!authorizationStatus.isAuthorized || !feedbackData.comment || isSubmitting || !wallet}
-            className="w-full"
+            className="w-full bg-gradient-to-r from-red-600 via-red-700 to-red-800 hover:from-red-700 hover:via-red-800 hover:to-red-900 shadow-lg hover:shadow-xl transition-all duration-200"
           >
             {isSubmitting ? (
               <>
                 <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                支払い処理中...
+                Processing payment...
               </>
             ) : (
               <>
-                <CreditCard className="h-4 w-4 mr-2" />
-                $0.05 USDC でフィードバックを投稿
+                <Mountain className="h-4 w-4 mr-2" />
+                Submit feedback with $0.05 USDC
               </>
             )}
           </Button>
@@ -317,7 +347,7 @@ export function FeedbackSystem({ agents = [] }: FeedbackSystemProps) {
               )}
               <div className="flex-1">
                 <p className={`font-medium ${submissionResult.success ? 'text-green-900' : 'text-red-900'}`}>
-                  {submissionResult.success ? "投稿完了" : "投稿失敗"}
+                  {submissionResult.success ? "Submission Complete" : "Submission Failed"}
                 </p>
                 <p className={`text-sm ${submissionResult.success ? 'text-green-700' : 'text-red-700'}`}>
                   {submissionResult.message}
@@ -339,9 +369,9 @@ export function FeedbackSystem({ agents = [] }: FeedbackSystemProps) {
       {/* Process Explanation */}
       <Card>
         <CardHeader>
-          <CardTitle>フィードバックプロセス</CardTitle>
+          <CardTitle>Feedback Process</CardTitle>
           <CardDescription>
-            USDC支払い付き評価システムの流れ
+            Evaluation system workflow with USDC payment
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -351,8 +381,8 @@ export function FeedbackSystem({ agents = [] }: FeedbackSystemProps) {
                 1
               </div>
               <div>
-                <p className="font-medium">評価権限確認</p>
-                <p className="text-sm text-gray-600">サーバーエージェントからの評価受付許可をチェック</p>
+                <p className="font-medium">Evaluation authorization verification</p>
+                <p className="text-sm text-gray-600">Check permission to accept evaluations from server agent</p>
               </div>
             </div>
 
@@ -361,8 +391,8 @@ export function FeedbackSystem({ agents = [] }: FeedbackSystemProps) {
                 2
               </div>
               <div>
-                <p className="font-medium">USDC支払い処理</p>
-                <p className="text-sm text-gray-600">HTTP 402プロトコルで$0.05 USDC自動決済</p>
+                <p className="font-medium">USDC payment processing</p>
+                <p className="text-sm text-gray-600">Automatic payment of $0.05 USDC via HTTP 402 protocol</p>
               </div>
             </div>
 
@@ -371,8 +401,8 @@ export function FeedbackSystem({ agents = [] }: FeedbackSystemProps) {
                 3
               </div>
               <div>
-                <p className="font-medium">評価データ送信</p>
-                <p className="text-sm text-gray-600">スコアとコメントをブロックチェーンに記録</p>
+                <p className="font-medium">Evaluation data submission</p>
+                <p className="text-sm text-gray-600">Record score and comments on blockchain</p>
               </div>
             </div>
           </div>

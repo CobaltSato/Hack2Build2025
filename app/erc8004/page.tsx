@@ -88,25 +88,44 @@ export default function ERC8004Page() {
 
   if (!wallet) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
-        <div className="text-center space-y-6 p-8 max-w-md">
-          <div className="flex justify-center space-x-2 text-4xl mb-4">
-            <Snowflake className="text-blue-400 animate-pulse" />
-            <Mountain className="text-indigo-500" />
-            <Bot className="text-purple-500" />
-          </div>
-          <div>
-            <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-              ERC-8004 Trustless Agents
-            </h1>
-            <p className="text-muted-foreground">Decentralized AI Agent Evaluation System</p>
-            <p className="text-sm text-muted-foreground mt-1">Powered by Avalanche Fuji Testnet</p>
-          </div>
-          <ConnectButton client={client} />
-          <div className="text-xs text-muted-foreground space-y-1">
-            <p>• Agent Registration & Evaluation</p>
-            <p>• Validation System</p>
-            <p>• USDC Payment Features</p>
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-red-50 via-orange-50 to-red-100">
+        <div className="text-center space-y-8 p-10 max-w-lg">
+          <div className="relative">
+            <div className="absolute inset-0 bg-gradient-to-r from-red-600 to-orange-600 rounded-3xl blur-xl opacity-30 animate-pulse"></div>
+            <div className="relative bg-white/80 backdrop-blur-sm rounded-3xl p-8 border border-white/50 shadow-2xl">
+              <div className="flex justify-center space-x-3 text-5xl mb-6">
+                <Mountain className="text-red-600 animate-bounce" style={{ animationDelay: '0s' }} />
+                <Snowflake className="text-red-500 animate-bounce" style={{ animationDelay: '0.2s' }} />
+                <Bot className="text-orange-600 animate-bounce" style={{ animationDelay: '0.4s' }} />
+              </div>
+              <div>
+                <h1 className="text-4xl font-bold mb-3 bg-gradient-to-r from-red-600 via-red-700 to-orange-600 bg-clip-text text-transparent">
+                  ERC-8004 Trustless Agents
+                </h1>
+                <p className="text-gray-700 font-medium">Decentralized AI Agent Evaluation System</p>
+                <div className="flex items-center justify-center gap-2 mt-2">
+                  <Mountain className="h-4 w-4 text-red-500" />
+                  <p className="text-sm text-red-600 font-semibold">Powered by Avalanche Fuji</p>
+                </div>
+              </div>
+              <div className="my-8">
+                <ConnectButton client={client} />
+              </div>
+              <div className="text-sm text-gray-600 space-y-2 bg-red-50 p-4 rounded-xl border border-red-100">
+                <div className="flex items-center gap-2">
+                  <CheckCircle className="h-4 w-4 text-red-600" />
+                  <span>Agent Registration & NFT Minting</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <CheckCircle className="h-4 w-4 text-red-600" />
+                  <span>Validation System with AVAX Rewards</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <CheckCircle className="h-4 w-4 text-red-600" />
+                  <span>x402 Payment Protocol Integration</span>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -114,29 +133,34 @@ export default function ERC8004Page() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
+    <div className="min-h-screen bg-gradient-to-br from-red-50 via-orange-50 to-red-100">
       {/* Header */}
-      <div className="border-b bg-white/50 backdrop-blur-sm sticky top-0 z-50">
+      <div className="border-b border-red-200/50 bg-gradient-to-r from-red-600 via-red-700 to-red-800 shadow-xl sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <div className="flex items-center space-x-2">
-                <Snowflake className="text-blue-500 h-8 w-8" />
-                <div>
-                  <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                    ERC-8004
-                  </h1>
-                  <p className="text-xs text-muted-foreground">Trustless Agents</p>
+            <div className="flex items-center space-x-4">
+              <div className="p-2 bg-white/20 backdrop-blur-sm rounded-xl border border-white/30">
+                <Mountain className="text-white h-8 w-8" />
+              </div>
+              <div>
+                <h1 className="text-2xl font-bold text-white">
+                  ERC-8004 Trustless Agents
+                </h1>
+                <div className="flex items-center space-x-2">
+                  <Snowflake className="text-red-200 h-4 w-4" />
+                  <p className="text-red-100">Avalanche Fuji Testnet</p>
                 </div>
               </div>
             </div>
             
             <div className="flex items-center space-x-4">
-              <Badge variant="outline" className="hidden md:flex">
-                <Mountain className="h-3 w-3 mr-1" />
-                Avalanche Fuji
+              <Badge variant="outline" className="hidden md:flex bg-white/20 border-white/30 text-white">
+                <Activity className="h-3 w-3 mr-1" />
+                Live Network
               </Badge>
-              <ConnectButton client={client} />
+              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-1 border border-white/20">
+                <ConnectButton client={client} />
+              </div>
             </div>
           </div>
         </div>
@@ -145,50 +169,58 @@ export default function ERC8004Page() {
       {/* Main Content */}
       <div className="container mx-auto px-4 py-8 space-y-8">
         {/* Hero Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-          <Card>
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+          <Card className="bg-gradient-to-br from-red-500/10 to-red-600/20 border-red-200 shadow-lg hover:shadow-xl transition-all">
             <CardContent className="p-6">
-              <div className="flex items-center space-x-2">
-                <Bot className="h-8 w-8 text-blue-500" />
+              <div className="flex items-center space-x-3">
+                <div className="p-3 bg-gradient-to-br from-red-500 to-red-600 rounded-xl">
+                  <Bot className="h-6 w-6 text-white" />
+                </div>
                 <div>
-                  <p className="text-2xl font-bold">{SAMPLE_AGENTS.length}</p>
-                  <p className="text-xs text-muted-foreground">Registered Agents</p>
+                  <p className="text-2xl font-bold text-red-800">{SAMPLE_AGENTS.length}</p>
+                  <p className="text-sm text-red-600 font-medium">Registered Agents</p>
                 </div>
               </div>
             </CardContent>
           </Card>
           
-          <Card>
+          <Card className="bg-gradient-to-br from-orange-500/10 to-orange-600/20 border-orange-200 shadow-lg hover:shadow-xl transition-all">
             <CardContent className="p-6">
-              <div className="flex items-center space-x-2">
-                <Star className="h-8 w-8 text-yellow-500" />
+              <div className="flex items-center space-x-3">
+                <div className="p-3 bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl">
+                  <Star className="h-6 w-6 text-white" />
+                </div>
                 <div>
-                  <p className="text-2xl font-bold">156</p>
-                  <p className="text-xs text-muted-foreground">Evaluations</p>
+                  <p className="text-2xl font-bold text-orange-800">156</p>
+                  <p className="text-sm text-orange-600 font-medium">Evaluations</p>
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="bg-gradient-to-br from-red-500/10 to-orange-500/20 border-red-200 shadow-lg hover:shadow-xl transition-all">
             <CardContent className="p-6">
-              <div className="flex items-center space-x-2">
-                <Shield className="h-8 w-8 text-green-500" />
+              <div className="flex items-center space-x-3">
+                <div className="p-3 bg-gradient-to-br from-red-500 to-orange-500 rounded-xl">
+                  <Shield className="h-6 w-6 text-white" />
+                </div>
                 <div>
-                  <p className="text-2xl font-bold">{SAMPLE_VALIDATIONS.length}</p>
-                  <p className="text-xs text-muted-foreground">Validations</p>
+                  <p className="text-2xl font-bold text-red-800">{SAMPLE_VALIDATIONS.length}</p>
+                  <p className="text-sm text-red-600 font-medium">Validations</p>
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="bg-gradient-to-br from-orange-500/10 to-red-500/20 border-orange-200 shadow-lg hover:shadow-xl transition-all">
             <CardContent className="p-6">
-              <div className="flex items-center space-x-2">
-                <Award className="h-8 w-8 text-purple-500" />
+              <div className="flex items-center space-x-3">
+                <div className="p-3 bg-gradient-to-br from-orange-500 to-red-500 rounded-xl">
+                  <Award className="h-6 w-6 text-white" />
+                </div>
                 <div>
-                  <p className="text-2xl font-bold">{userAgents.length}</p>
-                  <p className="text-xs text-muted-foreground">Owned Agents</p>
+                  <p className="text-2xl font-bold text-orange-800">{userAgents.length}</p>
+                  <p className="text-sm text-orange-600 font-medium">Owned Agents</p>
                 </div>
               </div>
             </CardContent>
@@ -197,126 +229,159 @@ export default function ERC8004Page() {
 
         {/* Main Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-3 md:grid-cols-6">
-            <TabsTrigger value="overview">Overview</TabsTrigger>
-            <TabsTrigger value="agents">Agents</TabsTrigger>
-            <TabsTrigger value="registration">Register</TabsTrigger>
-            <TabsTrigger value="feedback">Evaluate</TabsTrigger>
-            <TabsTrigger value="validation">Validate</TabsTrigger>
-            <TabsTrigger value="staking">Staking</TabsTrigger>
+          <TabsList className="grid w-full grid-cols-3 md:grid-cols-6 bg-gradient-to-r from-red-100 via-orange-100 to-red-100 border border-red-200 shadow-lg">
+            <TabsTrigger value="overview" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-red-600 data-[state=active]:to-red-700 data-[state=active]:text-white data-[state=active]:shadow-lg hover:bg-red-50 transition-all">Overview</TabsTrigger>
+            <TabsTrigger value="agents" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-red-600 data-[state=active]:to-red-700 data-[state=active]:text-white data-[state=active]:shadow-lg hover:bg-red-50 transition-all">Agents</TabsTrigger>
+            <TabsTrigger value="registration" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-red-600 data-[state=active]:to-red-700 data-[state=active]:text-white data-[state=active]:shadow-lg hover:bg-red-50 transition-all">Register</TabsTrigger>
+            <TabsTrigger value="feedback" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-red-600 data-[state=active]:to-red-700 data-[state=active]:text-white data-[state=active]:shadow-lg hover:bg-red-50 transition-all">Evaluate</TabsTrigger>
+            <TabsTrigger value="validation" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-red-600 data-[state=active]:to-red-700 data-[state=active]:text-white data-[state=active]:shadow-lg hover:bg-red-50 transition-all">Validate</TabsTrigger>
+            <TabsTrigger value="staking" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-red-600 data-[state=active]:to-red-700 data-[state=active]:text-white data-[state=active]:shadow-lg hover:bg-red-50 transition-all">Staking</TabsTrigger>
           </TabsList>
 
           {/* Overview Tab */}
-          <TabsContent value="overview" className="space-y-6">
-            <div className="grid md:grid-cols-2 gap-6">
-              {/* System Overview */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center space-x-2">
-                    <Bot className="h-5 w-5" />
-                    <span>システム概要</span>
-                  </CardTitle>
-                  <CardDescription>
-                    ERC-8004 Trustless Agentsの基本概念
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="space-y-3">
-                    <div className="flex items-start space-x-3">
-                      <User className="h-5 w-5 mt-0.5 text-blue-500" />
-                      <div>
-                        <p className="font-medium">エージェント登録</p>
-                        <p className="text-sm text-muted-foreground">
-                          0.005 AVAX でAIエージェントを登録
-                        </p>
-                      </div>
-                    </div>
-                    
-                    <div className="flex items-start space-x-3">
-                      <Star className="h-5 w-5 mt-0.5 text-yellow-500" />
-                      <div>
-                        <p className="font-medium">評価システム</p>
-                        <p className="text-sm text-muted-foreground">
-                          USDCでの支払い付き評価投稿
-                        </p>
-                      </div>
-                    </div>
-                    
-                    <div className="flex items-start space-x-3">
-                      <Shield className="h-5 w-5 mt-0.5 text-green-500" />
-                      <div>
-                        <p className="font-medium">検証システム</p>
-                        <p className="font-medium">バリデーター機能</p>
-                        <p className="text-sm text-muted-foreground">
-                          専門家による品質評価とステーキング
-                        </p>
-                      </div>
+          <TabsContent value="overview" className="space-y-8">
+            {/* Enhanced System Overview - Full Width */}
+            <Card className="bg-gradient-to-br from-red-500/5 to-orange-500/10 border-red-200 shadow-xl">
+              <CardHeader className="bg-gradient-to-r from-red-500/5 to-orange-500/5 border-b border-red-200">
+                <CardTitle className="flex items-center justify-center space-x-4 text-center">
+                  <div className="p-3 bg-gradient-to-br from-red-500 to-red-600 rounded-xl shadow-lg">
+                    <Mountain className="h-8 w-8 text-white" />
+                  </div>
+                  <div>
+                    <span className="text-2xl font-bold text-red-800">ERC-8004 Trustless Agents</span>
+                    <div className="flex items-center justify-center gap-2 mt-2">
+                      <Snowflake className="h-4 w-4 text-red-500" />
+                      <span className="text-sm text-red-600 font-semibold">Powered by Avalanche Fuji Network</span>
                     </div>
                   </div>
-                </CardContent>
-              </Card>
-
-              {/* Contracts Info */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center space-x-2">
-                    <ExternalLink className="h-5 w-5" />
-                    <span>コントラクト情報</span>
-                  </CardTitle>
-                  <CardDescription>
-                    Avalanche Fuji Testnet デプロイ済み
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-3">
-                  {Object.entries(CONTRACTS).map(([name, address]) => (
-                    <div key={name} className="space-y-1">
-                      <p className="font-medium text-sm">{name}</p>
-                      <code className="text-xs bg-muted p-2 rounded block break-all">
-                        {address}
-                      </code>
+                </CardTitle>
+                <CardDescription className="text-center text-red-700 text-lg">
+                  Decentralized AI Agent Identity, Reputation & Validation Protocol
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="p-8">
+                <div className="grid md:grid-cols-3 gap-8">
+                  <div className="text-center space-y-4">
+                    <div className="mx-auto p-4 bg-gradient-to-br from-red-500 to-red-600 rounded-2xl shadow-lg w-fit">
+                      <User className="h-8 w-8 text-white" />
                     </div>
-                  ))}
-                </CardContent>
-              </Card>
-            </div>
+                    <div>
+                      <h3 className="font-bold text-red-800 text-lg">Agent Registration</h3>
+                      <p className="text-red-600">
+                        Register AI agents as NFTs with 0.005 AVAX fee. Single agent type supports multiple roles: Client, Server, Validator.
+                      </p>
+                    </div>
+                  </div>
+                  
+                  <div className="text-center space-y-4">
+                    <div className="mx-auto p-4 bg-gradient-to-br from-orange-500 to-orange-600 rounded-2xl shadow-lg w-fit">
+                      <Star className="h-8 w-8 text-white" />
+                    </div>
+                    <div>
+                      <h3 className="font-bold text-orange-800 text-lg">Evaluation System</h3>
+                      <p className="text-orange-600">
+                        Submit agent evaluations with USDC payments. Anti-spam protection with feedback authorization system.
+                      </p>
+                    </div>
+                  </div>
+                  
+                  <div className="text-center space-y-4">
+                    <div className="mx-auto p-4 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl shadow-lg w-fit">
+                      <Shield className="h-8 w-8 text-white" />
+                    </div>
+                    <div>
+                      <h3 className="font-bold text-green-800 text-lg">Validation System</h3>
+                      <p className="text-green-600">
+                        Expert quality assessment with validator staking. AVAX rewards for timely validation responses.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Network Status */}
+                <div className="mt-8 bg-gradient-to-r from-red-50 via-orange-50 to-red-50 p-6 rounded-2xl border border-red-200">
+                  <div className="flex items-center justify-center gap-4 mb-4">
+                    <div className="flex items-center gap-2">
+                      <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
+                      <span className="text-sm font-semibold text-red-800">Network Status: LIVE</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Mountain className="h-4 w-4 text-red-500" />
+                      <span className="text-sm text-red-600">Avalanche Fuji Testnet</span>
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-3 gap-4 text-center">
+                    <div>
+                      <p className="text-lg font-bold text-red-800">{SAMPLE_AGENTS.length}</p>
+                      <p className="text-sm text-red-600">Active Agents</p>
+                    </div>
+                    <div>
+                      <p className="text-lg font-bold text-orange-800">156</p>
+                      <p className="text-sm text-orange-600">Total Evaluations</p>
+                    </div>
+                    <div>
+                      <p className="text-lg font-bold text-green-800">98.7%</p>
+                      <p className="text-sm text-green-600">Network Uptime</p>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
 
             {/* Key Features */}
-            <Card>
-              <CardHeader>
-                <CardTitle>重要なポイント</CardTitle>
-                <CardDescription>
-                  ERC-8004システムの特徴的な機能
+            <Card className="bg-gradient-to-br from-red-500/5 to-orange-500/5 border-red-200">
+              <CardHeader className="bg-gradient-to-r from-red-500/5 to-orange-500/5 border-b border-red-200">
+                <CardTitle className="flex items-center space-x-3">
+                  <div className="p-2 bg-gradient-to-br from-red-500 to-orange-500 rounded-xl">
+                    <Activity className="h-5 w-5 text-white" />
+                  </div>
+                  <div>
+                    <span className="text-red-800">Key Features</span>
+                    <div className="flex items-center gap-2 mt-1">
+                      <Mountain className="h-3 w-3 text-red-500" />
+                      <span className="text-xs text-red-600">System Capabilities</span>
+                    </div>
+                  </div>
+                </CardTitle>
+                <CardDescription className="text-red-700">
+                  ERC-8004 system distinctive features
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="grid md:grid-cols-3 gap-4">
-                  <div className="space-y-2">
-                    <div className="flex items-center space-x-2">
-                      <Bot className="h-5 w-5 text-blue-500" />
-                      <span className="font-medium">単一エージェントタイプ</span>
+                <div className="grid md:grid-cols-3 gap-6">
+                  <div className="space-y-3">
+                    <div className="flex items-center space-x-3">
+                      <div className="p-2 bg-gradient-to-br from-red-500 to-red-600 rounded-lg">
+                        <Bot className="h-4 w-4 text-white" />
+                      </div>
+                      <span className="font-medium text-red-800">Single Agent Type</span>
                     </div>
-                    <p className="text-sm text-muted-foreground">
-                      全エンティティは同じタイプのエージェントとして登録され、使用時に役割が決まります
+                    <p className="text-sm text-red-600">
+                      All entities register as the same agent type, with roles determined during usage
                     </p>
                   </div>
                   
-                  <div className="space-y-2">
-                    <div className="flex items-center space-x-2">
-                      <User className="h-5 w-5 text-green-500" />
-                      <span className="font-medium">複数役割の兼任</span>
+                  <div className="space-y-3">
+                    <div className="flex items-center space-x-3">
+                      <div className="p-2 bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg">
+                        <User className="h-4 w-4 text-white" />
+                      </div>
+                      <span className="font-medium text-orange-800">Multiple Role Support</span>
                     </div>
-                    <p className="text-sm text-muted-foreground">
-                      1つのエージェントがClient、Server、Validator全ての役割を果たせます
+                    <p className="text-sm text-orange-600">
+                      One agent can serve as Client, Server, and Validator simultaneously
                     </p>
                   </div>
                   
-                  <div className="space-y-2">
-                    <div className="flex items-center space-x-2">
-                      <CreditCard className="h-5 w-5 text-purple-500" />
-                      <span className="font-medium">USDC決済システム</span>
+                  <div className="space-y-3">
+                    <div className="flex items-center space-x-3">
+                      <div className="p-2 bg-gradient-to-br from-red-500 to-orange-500 rounded-lg">
+                        <CreditCard className="h-4 w-4 text-white" />
+                      </div>
+                      <span className="font-medium text-red-800">USDC Payment System</span>
                     </div>
-                    <p className="text-sm text-muted-foreground">
-                      評価投稿時にUSDCでの支払いが必要で、スパム防止に役立ちます
+                    <p className="text-sm text-red-600">
+                      USDC payments required for evaluations, preventing spam and ensuring quality
                     </p>
                   </div>
                 </div>
@@ -326,10 +391,21 @@ export default function ERC8004Page() {
 
           {/* Agents Tab */}
           <TabsContent value="agents" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Agent Directory</CardTitle>
-                <CardDescription>
+            <Card className="bg-gradient-to-br from-red-500/5 to-orange-500/10 border-red-200">
+              <CardHeader className="bg-gradient-to-r from-red-500/5 to-orange-500/5 border-b border-red-200">
+                <CardTitle className="flex items-center space-x-3">
+                  <div className="p-2 bg-gradient-to-br from-red-500 to-red-600 rounded-xl">
+                    <Bot className="h-5 w-5 text-white" />
+                  </div>
+                  <div>
+                    <span className="text-red-800">Agent Directory</span>
+                    <div className="flex items-center gap-2 mt-1">
+                      <Mountain className="h-3 w-3 text-red-500" />
+                      <span className="text-xs text-red-600">ERC-8004 Agent Registry</span>
+                    </div>
+                  </div>
+                </CardTitle>
+                <CardDescription className="text-red-700">
                   Registered AI Agents ({registeredAgents.length} total)
                 </CardDescription>
               </CardHeader>
@@ -337,34 +413,36 @@ export default function ERC8004Page() {
                 <ScrollArea className="h-[400px]">
                   <div className="space-y-4">
                     {registeredAgents.map((agent) => (
-                      <div key={agent.id} className="flex items-center justify-between p-4 border rounded-lg">
+                      <div key={agent.id} className="flex items-center justify-between p-5 bg-gradient-to-r from-red-50 via-orange-50 to-red-50 border border-red-200 rounded-xl shadow-lg hover:shadow-xl transition-all">
                         <div className="flex items-center space-x-4">
-                          <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-500 rounded-lg flex items-center justify-center text-white font-bold">
+                          <div className="w-12 h-12 bg-gradient-to-br from-red-500 to-orange-500 rounded-xl flex items-center justify-center text-white font-bold shadow-lg">
                             {agent.id}
                           </div>
                           <div>
-                            <p className="font-medium">{agent.name}</p>
-                            <p className="text-sm text-muted-foreground">@{agent.domain}</p>
-                            <p className="text-xs text-muted-foreground">{agent.owner}</p>
+                            <p className="font-bold text-red-800">{agent.name}</p>
+                            <div className="flex items-center gap-1">
+                              <Mountain className="h-3 w-3 text-red-500" />
+                              <p className="text-sm text-red-600">@{agent.domain}</p>
+                            </div>
+                            <p className="text-xs text-red-500">{agent.owner}</p>
                           </div>
                         </div>
-                        <div className="text-right space-y-1">
-                          <div className="flex gap-1">
-                            <Badge variant="secondary">{agent.type}</Badge>
+                        <div className="text-right space-y-2">
+                          <div className="flex gap-2">
+                            <Badge variant="secondary" className="bg-red-100 text-red-700 border-red-200">{agent.type}</Badge>
                             {userAgents.includes(agent.id) && (
-                              <Badge variant="default">Owned</Badge>
+                              <Badge variant="default" className="bg-gradient-to-r from-red-600 to-orange-600 text-white">Owned</Badge>
                             )}
                           </div>
                           <Button 
                             size="sm" 
-                            variant="outline"
                             onClick={() => setSelectedAgentForEvaluation({
                               id: agent.id.toString(),
                               name: agent.name
                             })}
-                            className="mt-2"
+                            className="bg-gradient-to-r from-red-600 via-red-700 to-red-800 hover:from-red-700 hover:via-red-800 hover:to-red-900 text-white shadow-lg hover:shadow-xl transition-all duration-200"
                           >
-                            <Plus className="h-3 w-3 mr-1" />
+                            <Mountain className="h-3 w-3 mr-1" />
                             View Details
                           </Button>
                         </div>

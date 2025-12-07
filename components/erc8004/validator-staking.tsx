@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Award, Shield, AlertTriangle, TrendingUp, DollarSign, Activity } from "lucide-react";
+import { Award, Shield, AlertTriangle, TrendingUp, DollarSign, Activity, Mountain, Snowflake } from "lucide-react";
 
 interface ValidatorStakingProps {
   userAgents?: number[];
@@ -49,18 +49,18 @@ export function ValidatorStaking({ userAgents = [], agents = [] }: ValidatorStak
 
   const getAgentName = (id: number) => {
     const agent = agents.find(a => a.id === id);
-    return agent ? agent.name : `エージェント #${id}`;
+    return agent ? agent.name : `Agent #${id}`;
   };
 
   const handleStaking = async () => {
     if (!stakingForm.agentId || !stakingForm.amount) {
-      alert("全ての項目を入力してください");
+      alert("Please fill in all fields");
       return;
     }
 
     const amount = parseFloat(stakingForm.amount);
     if (amount < 0.1) {
-      alert("最低ステーキング額は0.1 AVAXです");
+      alert("Minimum staking amount is 0.1 AVAX");
       return;
     }
 
@@ -95,10 +95,10 @@ export function ValidatorStaking({ userAgents = [], agents = [] }: ValidatorStak
         }
       });
 
-      alert(`${amount} AVAX のステーキングが完了しました！`);
+      alert(`${amount} AVAX staking completed successfully!`);
       setStakingForm({ agentId: "", amount: "0.1" });
     } catch (error) {
-      alert("ステーキングに失敗しました");
+      alert("Staking failed");
     } finally {
       setIsStaking(false);
     }
@@ -117,9 +117,9 @@ export function ValidatorStaking({ userAgents = [], agents = [] }: ValidatorStak
             : v
         )
       );
-      alert(`${amount} AVAX をアンステークしました`);
+      alert(`${amount} AVAX unstaked successfully`);
     } catch (error) {
-      alert("アンステークに失敗しました");
+      alert("Unstaking failed");
     }
   };
 
@@ -131,51 +131,59 @@ export function ValidatorStaking({ userAgents = [], agents = [] }: ValidatorStak
     <div className="space-y-6">
       {/* Overview Stats */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center space-x-2">
-              <DollarSign className="h-5 w-5 text-green-500" />
+        <Card className="bg-gradient-to-br from-red-500/10 to-red-600/20 border-red-200 shadow-lg hover:shadow-xl transition-all">
+          <CardContent className="p-5">
+            <div className="flex items-center space-x-3">
+              <div className="p-2 bg-gradient-to-br from-red-500 to-red-600 rounded-xl">
+                <DollarSign className="h-5 w-5 text-white" />
+              </div>
               <div>
-                <p className="text-lg font-bold">{totalStaked.toFixed(3)}</p>
-                <p className="text-xs text-muted-foreground">AVAX ステーキング中</p>
+                <p className="text-2xl font-bold text-red-800">{totalStaked.toFixed(3)}</p>
+                <p className="text-sm text-red-600 font-medium">AVAX Staked</p>
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center space-x-2">
-              <Award className="h-5 w-5 text-blue-500" />
+        <Card className="bg-gradient-to-br from-orange-500/10 to-orange-600/20 border-orange-200 shadow-lg hover:shadow-xl transition-all">
+          <CardContent className="p-5">
+            <div className="flex items-center space-x-3">
+              <div className="p-2 bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl">
+                <Award className="h-5 w-5 text-white" />
+              </div>
               <div>
-                <p className="text-lg font-bold">{activeValidators}</p>
-                <p className="text-xs text-muted-foreground">アクティブバリデーター</p>
+                <p className="text-2xl font-bold text-orange-800">{activeValidators}</p>
+                <p className="text-sm text-orange-600 font-medium">Active Validators</p>
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center space-x-2">
-              <Activity className="h-5 w-5 text-purple-500" />
+        <Card className="bg-gradient-to-br from-red-500/10 to-orange-500/20 border-red-200 shadow-lg hover:shadow-xl transition-all">
+          <CardContent className="p-5">
+            <div className="flex items-center space-x-3">
+              <div className="p-2 bg-gradient-to-br from-red-500 to-orange-500 rounded-xl">
+                <Activity className="h-5 w-5 text-white" />
+              </div>
               <div>
-                <p className="text-lg font-bold">
+                <p className="text-2xl font-bold text-red-800">
                   {validatorStats.reduce((sum, v) => sum + v.totalValidations, 0)}
                 </p>
-                <p className="text-xs text-muted-foreground">総検証数</p>
+                <p className="text-sm text-red-600 font-medium">Total Validations</p>
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center space-x-2">
-              <TrendingUp className="h-5 w-5 text-orange-500" />
+        <Card className="bg-gradient-to-br from-orange-500/10 to-red-500/20 border-orange-200 shadow-lg hover:shadow-xl transition-all">
+          <CardContent className="p-5">
+            <div className="flex items-center space-x-3">
+              <div className="p-2 bg-gradient-to-br from-orange-500 to-red-500 rounded-xl">
+                <TrendingUp className="h-5 w-5 text-white" />
+              </div>
               <div>
-                <p className="text-lg font-bold">{totalEarned.toFixed(3)}</p>
-                <p className="text-xs text-muted-foreground">AVAX 獲得済み</p>
+                <p className="text-2xl font-bold text-orange-800">{totalEarned.toFixed(3)}</p>
+                <p className="text-sm text-orange-600 font-medium">AVAX Earned</p>
               </div>
             </div>
           </CardContent>
@@ -183,39 +191,61 @@ export function ValidatorStaking({ userAgents = [], agents = [] }: ValidatorStak
       </div>
 
       {/* Staking Form */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center space-x-2">
-            <Shield className="h-5 w-5" />
-            <span>バリデーター登録</span>
+      <Card className="bg-gradient-to-br from-red-500/5 to-orange-500/10 border-red-200">
+        <CardHeader className="bg-gradient-to-r from-red-500/5 to-orange-500/5 border-b border-red-200">
+          <CardTitle className="flex items-center space-x-3">
+            <div className="p-2 bg-gradient-to-br from-red-500 to-red-600 rounded-xl">
+              <Shield className="h-5 w-5 text-white" />
+            </div>
+            <div>
+              <span className="text-red-800">Validator Registration</span>
+              <div className="flex items-center gap-2 mt-1">
+                <Mountain className="h-3 w-3 text-red-500" />
+                <span className="text-xs text-red-600">Avalanche Validator Staking</span>
+              </div>
+            </div>
           </CardTitle>
-          <CardDescription>
-            専門家として働くために保証金をステーキングします
+          <CardDescription className="text-red-700">
+            Stake collateral to work as an expert validator
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="bg-green-50 p-4 rounded-lg">
-            <h4 className="font-medium mb-2 flex items-center">
-              <Award className="h-4 w-4 mr-2" />
-              バリデーター要件
+          <div className="bg-gradient-to-r from-red-50 via-orange-50 to-red-50 p-4 rounded-xl border border-red-200">
+            <h4 className="font-bold mb-3 flex items-center text-red-800">
+              <div className="p-1 bg-gradient-to-br from-red-500 to-orange-500 rounded-lg mr-2">
+                <Award className="h-4 w-4 text-white" />
+              </div>
+              Validator Requirements
             </h4>
-            <ul className="text-sm text-green-700 space-y-1">
-              <li>• 最低 0.1 AVAX のステーキング</li>
-              <li>• 検証作業の報酬を獲得</li>
-              <li>• 無応答時は10%のペナルティ</li>
-              <li>• 継続的な専門性の提供</li>
+            <ul className="text-sm text-red-700 space-y-2">
+              <li className="flex items-center gap-2">
+                <Mountain className="h-3 w-3 text-red-500" />
+                Minimum 0.1 AVAX staking
+              </li>
+              <li className="flex items-center gap-2">
+                <Snowflake className="h-3 w-3 text-red-500" />
+                Earn rewards from validation work
+              </li>
+              <li className="flex items-center gap-2">
+                <AlertTriangle className="h-3 w-3 text-red-500" />
+                10% penalty for non-response
+              </li>
+              <li className="flex items-center gap-2">
+                <Award className="h-3 w-3 text-red-500" />
+                Continuous expertise provision
+              </li>
             </ul>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium mb-2">エージェントID</label>
+              <label className="block text-sm font-medium mb-2">Agent ID</label>
               <select
                 value={stakingForm.agentId}
                 onChange={(e) => setStakingForm(prev => ({ ...prev, agentId: e.target.value }))}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-red-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
               >
-                <option value="">選択してください</option>
+                <option value="">Please select</option>
                 {agents
                   .filter(agent => userAgents.includes(agent.id))
                   .map(agent => (
@@ -225,22 +255,22 @@ export function ValidatorStaking({ userAgents = [], agents = [] }: ValidatorStak
                   ))}
               </select>
               <p className="text-xs text-gray-500 mt-1">
-                所有しているエージェントのみ選択可能
+                Only owned agents can be selected
               </p>
             </div>
 
             <div>
-              <label className="block text-sm font-medium mb-2">ステーキング額 (AVAX)</label>
+              <label className="block text-sm font-medium mb-2">Staking Amount (AVAX)</label>
               <input
                 type="number"
                 step="0.01"
                 min="0.1"
                 value={stakingForm.amount}
                 onChange={(e) => setStakingForm(prev => ({ ...prev, amount: e.target.value }))}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-orange-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
               />
               <p className="text-xs text-gray-500 mt-1">
-                最低ステーキング額: 0.1 AVAX
+                Minimum staking amount: 0.1 AVAX
               </p>
             </div>
           </div>
@@ -248,19 +278,40 @@ export function ValidatorStaking({ userAgents = [], agents = [] }: ValidatorStak
           <Button 
             onClick={handleStaking}
             disabled={isStaking || !stakingForm.agentId || parseFloat(stakingForm.amount) < 0.1}
-            className="w-full"
+            className="w-full bg-gradient-to-r from-red-600 via-red-700 to-red-800 hover:from-red-700 hover:via-red-800 hover:to-red-900 shadow-lg hover:shadow-xl transition-all duration-200"
           >
-            {isStaking ? "ステーキング中..." : "バリデーターとしてステーキング"}
+            {isStaking ? (
+              <>
+                <Shield className="h-4 w-4 mr-2 animate-spin" />
+                <span>Staking...</span>
+              </>
+            ) : (
+              <>
+                <Mountain className="h-4 w-4 mr-2" />
+                <span>Stake as Validator</span>
+              </>
+            )}
           </Button>
         </CardContent>
       </Card>
 
       {/* Validator Stats */}
-      <Card>
-        <CardHeader>
-          <CardTitle>バリデーター状況</CardTitle>
-          <CardDescription>
-            あなたのバリデーター活動状況
+      <Card className="bg-gradient-to-br from-orange-500/5 to-red-500/10 border-orange-200">
+        <CardHeader className="bg-gradient-to-r from-orange-500/5 to-red-500/5 border-b border-orange-200">
+          <CardTitle className="flex items-center space-x-3">
+            <div className="p-2 bg-gradient-to-br from-orange-500 to-red-500 rounded-xl">
+              <Activity className="h-5 w-5 text-white" />
+            </div>
+            <div>
+              <span className="text-orange-800">Validator Status</span>
+              <div className="flex items-center gap-2 mt-1">
+                <Snowflake className="h-3 w-3 text-orange-500" />
+                <span className="text-xs text-orange-600">Your Validator Activity</span>
+              </div>
+            </div>
+          </CardTitle>
+          <CardDescription className="text-orange-700">
+            Your validator activity status
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -274,11 +325,11 @@ export function ValidatorStaking({ userAgents = [], agents = [] }: ValidatorStak
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="font-medium">{getAgentName(validator.agentId)}</p>
-                      <p className="text-sm text-gray-600">エージェント #{validator.agentId}</p>
+                      <p className="text-sm text-gray-600">Agent #{validator.agentId}</p>
                     </div>
                     <div className="text-right">
                       <Badge variant={validator.isActive ? "default" : "secondary"}>
-                        {validator.isActive ? "アクティブ" : "非アクティブ"}
+                        {validator.isActive ? "Active" : "Inactive"}
                       </Badge>
                     </div>
                   </div>
@@ -288,28 +339,28 @@ export function ValidatorStaking({ userAgents = [], agents = [] }: ValidatorStak
                       <p className="text-lg font-bold text-blue-600">
                         {validator.stakedAmount.toFixed(3)}
                       </p>
-                      <p className="text-xs text-muted-foreground">AVAX ステーキング</p>
+                      <p className="text-xs text-muted-foreground">AVAX Staked</p>
                     </div>
 
                     <div className="text-center">
                       <p className="text-lg font-bold text-green-600">
                         {validator.totalValidations}
                       </p>
-                      <p className="text-xs text-muted-foreground">検証完了数</p>
+                      <p className="text-xs text-muted-foreground">Validations Completed</p>
                     </div>
 
                     <div className="text-center">
                       <p className="text-lg font-bold text-purple-600">
                         {validator.averageScore.toFixed(1)}
                       </p>
-                      <p className="text-xs text-muted-foreground">平均スコア</p>
+                      <p className="text-xs text-muted-foreground">Average Score</p>
                     </div>
 
                     <div className="text-center">
                       <p className="text-lg font-bold text-orange-600">
                         {validator.totalEarned.toFixed(3)}
                       </p>
-                      <p className="text-xs text-muted-foreground">AVAX 獲得</p>
+                      <p className="text-xs text-muted-foreground">AVAX Earned</p>
                     </div>
                   </div>
 
@@ -320,14 +371,14 @@ export function ValidatorStaking({ userAgents = [], agents = [] }: ValidatorStak
                         variant="outline"
                         onClick={() => handleUnstaking(validator.agentId, 0.05)}
                       >
-                        0.05 AVAX アンステーク
+                        Unstake 0.05 AVAX
                       </Button>
                       <Button 
                         size="sm" 
                         variant="outline"
                         onClick={() => handleUnstaking(validator.agentId, 0.1)}
                       >
-                        0.1 AVAX アンステーク
+                        Unstake 0.1 AVAX
                       </Button>
                     </div>
                   )}
@@ -337,7 +388,7 @@ export function ValidatorStaking({ userAgents = [], agents = [] }: ValidatorStak
                       <div className="flex items-center space-x-2">
                         <AlertTriangle className="h-4 w-4 text-amber-600" />
                         <p className="text-sm text-amber-700">
-                          最低ステーキング額（0.1 AVAX）を下回っています
+                          Below minimum staking amount (0.1 AVAX)
                         </p>
                       </div>
                     </div>
@@ -347,37 +398,45 @@ export function ValidatorStaking({ userAgents = [], agents = [] }: ValidatorStak
             </div>
           ) : (
             <div className="text-center py-8 text-gray-500">
-              まだバリデーターとして登録されていません
+              Not yet registered as a validator
             </div>
           )}
         </CardContent>
       </Card>
 
       {/* Slashing Information */}
-      <Card className="border-amber-200 bg-amber-50">
-        <CardHeader>
-          <CardTitle className="flex items-center space-x-2 text-amber-900">
-            <AlertTriangle className="h-5 w-5" />
-            <span>スラッシング（ペナルティ）システム</span>
+      <Card className="bg-gradient-to-br from-red-500/5 to-orange-500/5 border-red-200">
+        <CardHeader className="bg-gradient-to-r from-red-500/5 to-orange-500/5 border-b border-red-200">
+          <CardTitle className="flex items-center space-x-3">
+            <div className="p-2 bg-gradient-to-br from-red-500 to-orange-500 rounded-xl">
+              <AlertTriangle className="h-5 w-5 text-white" />
+            </div>
+            <div>
+              <span className="text-red-800">Slashing (Penalty) System</span>
+              <div className="flex items-center gap-2 mt-1">
+                <Mountain className="h-3 w-3 text-red-500" />
+                <span className="text-xs text-red-600">Risk Management System</span>
+              </div>
+            </div>
           </CardTitle>
-          <CardDescription className="text-amber-700">
-            バリデーターの責任とリスクについて
+          <CardDescription className="text-red-700">
+            About validator responsibilities and risks
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-3">
           <div className="space-y-2 text-amber-800">
-            <p className="font-medium">ペナルティ条件:</p>
+            <p className="font-medium">Penalty Conditions:</p>
             <ul className="text-sm space-y-1 ml-4">
-              <li>• 検証依頼に期限内（1000ブロック≈4-5時間）に応答しない</li>
-              <li>• ステーキング額の10%が没収される</li>
-              <li>• 没収された額は依頼者に補償として支払われる</li>
-              <li>• 最低ステーキング額を下回ると非アクティブ化</li>
+              <li>• No response to validation requests within deadline (1000 blocks ≈ 4-5 hours)</li>
+              <li>• 10% of staked amount is confiscated</li>
+              <li>• Confiscated amount is paid to requester as compensation</li>
+              <li>• Deactivated if below minimum staking amount</li>
             </ul>
           </div>
           
           <div className="bg-white p-3 rounded border">
             <p className="text-sm font-medium text-amber-900">
-              責任ある検証作業を継続することで、安定した報酬を獲得できます
+              Stable rewards can be earned by continuing responsible validation work
             </p>
           </div>
         </CardContent>

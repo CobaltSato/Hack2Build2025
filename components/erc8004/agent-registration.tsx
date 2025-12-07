@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Bot, Plus, CheckCircle, Loader2 } from "lucide-react";
+import { Bot, Plus, CheckCircle, Loader2, Mountain, Snowflake } from "lucide-react";
 import { useActiveAccount, useSendTransaction } from "thirdweb/react";
 import { createThirdwebClient, getContract, prepareContractCall } from "thirdweb";
 import { avalancheFuji } from "thirdweb/chains";
@@ -160,24 +160,40 @@ export function AgentRegistration({ onAgentRegistered }: AgentRegistrationProps)
     <div className="space-y-6">
       {/* Registration Form */}
       <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center space-x-2">
-            <Bot className="h-5 w-5" />
-            <span>Agent Registration</span>
+        <CardHeader className="bg-gradient-to-r from-red-500/5 to-orange-500/5 border-b border-red-200">
+          <CardTitle className="flex items-center space-x-3">
+            <div className="p-2 bg-gradient-to-br from-red-500 to-red-600 rounded-xl">
+              <Mountain className="h-6 w-6 text-white" />
+            </div>
+            <div>
+              <span className="text-xl text-red-800">Agent Registration</span>
+              <div className="flex items-center gap-2 mt-1">
+                <Snowflake className="h-3 w-3 text-red-500" />
+                <span className="text-xs text-red-600 font-medium">Avalanche Network</span>
+              </div>
+            </div>
           </CardTitle>
-          <CardDescription>
-            Register a new AI agent in the ERC-8004 system
+          <CardDescription className="text-red-700">
+            Register a new AI agent NFT in the ERC-8004 IdentityRegistry contract
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
           {/* Registration Fee Info */}
-          <div className="bg-gradient-to-r from-orange-50 to-red-50 p-4 rounded-lg border border-orange-200">
-            <div className="flex items-center space-x-2 mb-2">
-              <CheckCircle className="h-4 w-4 text-orange-600" />
-              <span className="font-medium text-orange-900">Registration Fee: 0.005 AVAX</span>
+          <div className="bg-gradient-to-r from-red-50 via-orange-50 to-red-50 p-5 rounded-xl border border-red-200 shadow-sm">
+            <div className="flex items-center space-x-3 mb-3">
+              <div className="p-2 bg-gradient-to-br from-red-500 to-orange-500 rounded-lg">
+                <Mountain className="h-4 w-4 text-white" />
+              </div>
+              <div>
+                <span className="font-bold text-red-800">Registration Fee: 0.005 AVAX</span>
+                <div className="flex items-center gap-1 mt-0.5">
+                  <Snowflake className="h-3 w-3 text-red-500" />
+                  <span className="text-xs text-red-600">Avalanche blockchain fee</span>
+                </div>
+              </div>
             </div>
-            <p className="text-xs text-orange-600">
-              Agent registration requires 0.005 AVAX to prevent spam
+            <p className="text-sm text-red-700 bg-red-100 px-3 py-2 rounded-lg">
+              💎 Agent registration mints an NFT identity for Client/Server/Validator roles
             </p>
           </div>
 
@@ -241,27 +257,35 @@ export function AgentRegistration({ onAgentRegistered }: AgentRegistrationProps)
           <Button 
             onClick={handleRegister}
             disabled={!isFormValid || isRegistering}
-            className="w-full bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700"
+            className="w-full bg-gradient-to-r from-red-600 via-red-700 to-red-800 hover:from-red-700 hover:via-red-800 hover:to-red-900 shadow-lg hover:shadow-xl transition-all duration-200"
           >
             {isRegistering ? (
               <>
-                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                Registering Agent...
+                <Loader2 className="h-5 w-5 mr-2 animate-spin" />
+                <span className="font-semibold">Registering Agent on Avalanche...</span>
               </>
             ) : (
               <>
-                <Plus className="h-4 w-4 mr-2" />
-                Register Agent
+                <Mountain className="h-5 w-5 mr-2" />
+                <span className="font-semibold">Register Agent NFT</span>
               </>
             )}
           </Button>
 
           {/* Success Message - Right below the button */}
           {registeredAgent && (
-            <div className="mt-4 p-4 bg-green-50 border border-green-200 rounded-lg">
-              <div className="flex items-center space-x-2 mb-3">
-                <CheckCircle className="h-5 w-5 text-green-600" />
-                <span className="font-medium text-green-900">Registration Successful!</span>
+            <div className="mt-4 p-5 bg-gradient-to-r from-green-50 via-emerald-50 to-green-50 border border-green-200 rounded-xl shadow-lg">
+              <div className="flex items-center space-x-3 mb-4">
+                <div className="p-2 bg-gradient-to-br from-green-500 to-emerald-500 rounded-xl">
+                  <CheckCircle className="h-5 w-5 text-white" />
+                </div>
+                <div>
+                  <span className="font-bold text-green-800">🎉 Registration Successful!</span>
+                  <div className="flex items-center gap-2 mt-1">
+                    <Mountain className="h-3 w-3 text-green-600" />
+                    <span className="text-xs text-green-600">NFT minted on Avalanche</span>
+                  </div>
+                </div>
               </div>
               
               <div className="space-y-2 text-sm">
