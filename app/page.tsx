@@ -111,8 +111,16 @@ export default function Home() {
         <div className="text-center space-y-2">
           <h1 className="text-4xl font-bold">x402 Payment Demo</h1>
           <p className="text-muted-foreground">Choose a payment tier to unlock content</p>
-          <div className="flex items-center justify-center gap-2 pt-2">
+          <div className="flex items-center justify-center gap-4 pt-2">
             <ConnectButton client={client} />
+            <div className="flex gap-2">
+              <a 
+                href="/erc8004" 
+                className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors text-sm font-medium"
+              >
+                🏔️ ERC-8004 Demo
+              </a>
+            </div>
           </div>
         </div>
 
