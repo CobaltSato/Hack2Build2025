@@ -13,6 +13,7 @@ import { AgentRegistration } from "@/components/erc8004/agent-registration";
 import { FeedbackSystem } from "@/components/erc8004/feedback-system";
 import { ValidationSystem } from "@/components/erc8004/validation-system";
 import { ValidatorStaking } from "@/components/erc8004/validator-staking";
+import { ValidatorRegistration } from "@/components/erc8004/validator-registration";
 import { DetailedEvaluation } from "@/components/erc8004/detailed-evaluation";
 import { 
   User, 
@@ -235,7 +236,7 @@ export default function ERC8004Page() {
             <TabsTrigger value="registration" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-red-600 data-[state=active]:to-red-700 data-[state=active]:text-white data-[state=active]:shadow-lg hover:bg-red-50 transition-all">Register</TabsTrigger>
             <TabsTrigger value="feedback" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-red-600 data-[state=active]:to-red-700 data-[state=active]:text-white data-[state=active]:shadow-lg hover:bg-red-50 transition-all">Evaluate</TabsTrigger>
             <TabsTrigger value="validation" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-red-600 data-[state=active]:to-red-700 data-[state=active]:text-white data-[state=active]:shadow-lg hover:bg-red-50 transition-all">Validate</TabsTrigger>
-            <TabsTrigger value="staking" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-red-600 data-[state=active]:to-red-700 data-[state=active]:text-white data-[state=active]:shadow-lg hover:bg-red-50 transition-all">Staking</TabsTrigger>
+            <TabsTrigger value="validator" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-600 data-[state=active]:to-purple-700 data-[state=active]:text-white data-[state=active]:shadow-lg hover:bg-purple-50 transition-all">Validator</TabsTrigger>
           </TabsList>
 
           {/* Overview Tab */}
@@ -472,6 +473,11 @@ export default function ERC8004Page() {
           {/* Staking Tab */}
           <TabsContent value="staking" className="space-y-6">
             <ValidatorStaking userAgents={userAgents} agents={registeredAgents} />
+          </TabsContent>
+
+          {/* Validator Registration Tab */}
+          <TabsContent value="validator" className="space-y-6">
+            <ValidatorRegistration />
           </TabsContent>
         </Tabs>
       </div>
