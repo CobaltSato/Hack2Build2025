@@ -99,7 +99,9 @@ export function DetailedEvaluation({ agentId, agentName, onClose }: DetailedEval
         normalizedFetch,
         client,
         wallet,
-        PAYMENT_AMOUNTS.EVALUATION_VIEW?.bigInt || BigInt(100000) // Fallback: 0.10 USDC
+        {
+          maxValue: PAYMENT_AMOUNTS.EVALUATION_VIEW?.bigInt || BigInt(100000), // Fallback: 0.10 USDC
+        }
       );
 
       const response = await fetchWithPay(API_ENDPOINTS.EVALUATION_VIEW, {
