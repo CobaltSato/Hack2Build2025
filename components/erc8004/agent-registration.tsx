@@ -35,7 +35,7 @@ export function AgentRegistration({ onAgentRegistered }: AgentRegistrationProps)
     agentName: "",
     cardURI: "",
   });
-  const [registeredAgent, setRegisteredAgent] = useState<{ id: string; name: string; txHash: string } | null>(null);
+  const [registeredAgent, setRegisteredAgent] = useState<{ id: number; name: string; domain: string; txHash: string } | null>(null);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
   const validateAgentName = (name: string) => {
@@ -122,7 +122,7 @@ export function AgentRegistration({ onAgentRegistered }: AgentRegistrationProps)
           console.log('Transaction successful:', result);
           
           // Generate mock agent ID (in real app, you'd parse the transaction receipt for the returned token ID)
-          const agentId = Date.now().toString();
+          const agentId = Date.now();
           
           const newAgent = {
             id: agentId,

@@ -10,7 +10,7 @@ const client = createThirdwebClient({
 
 // IdentityRegistry contract configuration
 const IDENTITY_REGISTRY_ADDRESS = "0x96eF5c6941d5f8dfB4a39F44E9238b85F01F4d29";
-const AGENT_REGISTRATION_FEE = "5000000000000000"; // 0.005 AVAX in wei
+const AGENT_REGISTRATION_FEE = BigInt("5000000000000000"); // 0.005 AVAX in wei
 
 const identityContract = getContract({
   client,
