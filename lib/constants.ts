@@ -12,6 +12,7 @@ export const API_ENDPOINTS = {
   PREMIUM: `/api/premium`,
   FEEDBACK: `/api/feedback`,
   EVALUATION_VIEW: `/api/evaluation-view`,
+  NEW_AGENT: `/api/new-agent`,
 } as const;
 
 // Payment Amounts (USDC with 6 decimals)
@@ -31,5 +32,9 @@ export const PAYMENT_AMOUNTS = {
   EVALUATION_VIEW: {
     amount: "100000", // $0.10 USDC for detailed evaluation access
     bigInt: BigInt(100000),
+  },
+  NEW_AGENT: {
+    amount: "20000", // $0.02 USDC for agent registration (plus 0.005 AVAX gas fee)
+    bigInt: BigInt(20000),
   },
 } as const;

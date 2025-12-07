@@ -5,36 +5,55 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Bot, Plus, CheckCircle, Loader2 } from "lucide-react";
+import { useActiveAccount, useSendTransaction } from "thirdweb/react";
+import { createThirdwebClient, getContract, prepareContractCall } from "thirdweb";
+import { avalancheFuji } from "thirdweb/chains";
 
 interface AgentRegistrationProps {
   onAgentRegistered?: (agent: { id: number; name: string; domain: string }) => void;
 }
 
+// Contract configuration
+const client = createThirdwebClient({
+  clientId: process.env.NEXT_PUBLIC_THIRDWEB_CLIENT_ID!,
+});
+
+const IDENTITY_REGISTRY_ADDRESS = "0x96eF5c6941d5f8dfB4a39F44E9238b85F01F4d29";
+const AGENT_REGISTRATION_FEE = BigInt("5000000000000000"); // 0.005 AVAX in wei
+
+const identityContract = getContract({
+  client,
+  chain: avalancheFuji,
+  address: IDENTITY_REGISTRY_ADDRESS,
+});
+
 export function AgentRegistration({ onAgentRegistered }: AgentRegistrationProps) {
+  const account = useActiveAccount();
+  const { mutate: sendTransaction, isPending: isSending } = useSendTransaction();
+  
   const [formData, setFormData] = useState({
-    domain: "",
+    agentName: "",
     cardURI: "",
   });
-  const [isRegistering, setIsRegistering] = useState(false);
-  const [registeredAgent, setRegisteredAgent] = useState<{ id: number; name: string; domain: string } | null>(null);
+  const [registeredAgent, setRegisteredAgent] = useState<{ id: string; name: string; txHash: string } | null>(null);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
-  const validateDomain = (domain: string) => {
-    if (domain.length < 3 || domain.length > 64) {
-      return "ドメイン名は3-64文字である必要があります";
+  const validateAgentName = (name: string) => {
+    if (name.length < 3 || name.length > 64) {
+      return "Agent name must be between 3-64 characters";
     }
-    if (!/^[a-zA-Z0-9.-]+$/.test(domain)) {
-      return "英数字、ハイフン、ピリオドのみ使用可能です";
+    if (!/^[a-zA-Z0-9]+$/.test(name)) {
+      return "Only alphanumeric characters are allowed";
     }
     return "";
   };
 
   const validateCardURI = (uri: string) => {
     if (!uri) {
-      return "メタデータURIは必須です";
+      return "Metadata URI is required";
     }
     if (!uri.startsWith("ipfs://") && !uri.startsWith("https://")) {
-      return "有効なIPFSまたはHTTPS URLを入力してください";
+      return "Please enter a valid IPFS or HTTPS URL";
     }
     return "";
   };
@@ -44,12 +63,12 @@ export function AgentRegistration({ onAgentRegistered }: AgentRegistrationProps)
     
     // Real-time validation
     const newErrors = { ...errors };
-    if (field === "domain") {
-      const error = validateDomain(value);
+    if (field === "agentName") {
+      const error = validateAgentName(value);
       if (error) {
-        newErrors.domain = error;
+        newErrors.agentName = error;
       } else {
-        delete newErrors.domain;
+        delete newErrors.agentName;
       }
     } else if (field === "cardURI") {
       const error = validateCardURI(value);
@@ -63,45 +82,79 @@ export function AgentRegistration({ onAgentRegistered }: AgentRegistrationProps)
   };
 
   const handleRegister = async () => {
+    if (!account) {
+      setErrors({ general: "Please connect your wallet first" });
+      return;
+    }
+
     // Validate all fields
-    const domainError = validateDomain(formData.domain);
+    const nameError = validateAgentName(formData.agentName);
     const uriError = validateCardURI(formData.cardURI);
     
-    if (domainError || uriError) {
+    if (nameError || uriError) {
       setErrors({
-        ...(domainError && { domain: domainError }),
+        ...(nameError && { agentName: nameError }),
         ...(uriError && { cardURI: uriError }),
       });
       return;
     }
 
-    setIsRegistering(true);
     setErrors({});
 
     try {
-      // Simulate network delay
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      // Simulate successful registration
-      const newAgent = {
-        id: Date.now(), // Mock ID
-        name: formData.domain.charAt(0).toUpperCase() + formData.domain.slice(1).replace(/[-.]/, ' '),
-        domain: formData.domain,
-      };
+      console.log('Starting registration with:', {
+        agentName: formData.agentName,
+        cardURI: formData.cardURI,
+        userAddress: account.address,
+      });
 
-      setRegisteredAgent(newAgent);
-      onAgentRegistered?.(newAgent);
+      // Prepare the contract call
+      const transaction = prepareContractCall({
+        contract: identityContract,
+        method: "function newAgent(string memory domain, string memory cardURI) external payable returns (uint256)",
+        params: [formData.agentName, formData.cardURI],
+        value: AGENT_REGISTRATION_FEE, // 0.005 AVAX fee
+      });
 
-      // Reset form
-      setFormData({ domain: "", cardURI: "" });
+      // Send the transaction using user's wallet
+      sendTransaction(transaction, {
+        onSuccess: (result) => {
+          console.log('Transaction successful:', result);
+          
+          // Generate mock agent ID (in real app, you'd parse the transaction receipt for the returned token ID)
+          const agentId = Date.now().toString();
+          
+          const newAgent = {
+            id: agentId,
+            name: formData.agentName,
+            domain: formData.agentName,
+            txHash: result.transactionHash,
+          };
+
+          setRegisteredAgent(newAgent);
+          onAgentRegistered?.(newAgent);
+
+          // Reset form
+          setFormData({ agentName: "", cardURI: "" });
+        },
+        onError: (error) => {
+          console.error('Transaction failed:', error);
+          setErrors({ 
+            general: error.message || "Transaction failed. Please try again." 
+          });
+        },
+      });
+
     } catch (error) {
-      setErrors({ general: "登録に失敗しました。もう一度お試しください。" });
-    } finally {
-      setIsRegistering(false);
+      console.error('Registration error:', error);
+      setErrors({ 
+        general: error instanceof Error ? error.message : "Registration failed. Please try again." 
+      });
     }
   };
 
-  const isFormValid = formData.domain && formData.cardURI && Object.keys(errors).length === 0;
+  const isFormValid = formData.agentName && formData.cardURI && Object.keys(errors).length === 0 && !!account;
+  const isRegistering = isSending;
 
   return (
     <div className="space-y-6">
@@ -110,21 +163,21 @@ export function AgentRegistration({ onAgentRegistered }: AgentRegistrationProps)
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">
             <Bot className="h-5 w-5" />
-            <span>エージェント登録</span>
+            <span>Agent Registration</span>
           </CardTitle>
           <CardDescription>
-            新しいAIエージェントをERC-8004システムに登録します
+            Register a new AI agent in the ERC-8004 system
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
           {/* Registration Fee Info */}
-          <div className="bg-blue-50 p-4 rounded-lg">
+          <div className="bg-gradient-to-r from-orange-50 to-red-50 p-4 rounded-lg border border-orange-200">
             <div className="flex items-center space-x-2 mb-2">
-              <CheckCircle className="h-4 w-4 text-blue-600" />
-              <span className="font-medium text-blue-900">登録料: 0.005 AVAX</span>
+              <CheckCircle className="h-4 w-4 text-orange-600" />
+              <span className="font-medium text-orange-900">Registration Fee: 0.005 AVAX</span>
             </div>
-            <p className="text-sm text-blue-700">
-              エージェント登録にはスパム防止のため登録料が必要です
+            <p className="text-xs text-orange-600">
+              Agent registration requires 0.005 AVAX to prevent spam
             </p>
           </div>
 
@@ -132,35 +185,35 @@ export function AgentRegistration({ onAgentRegistered }: AgentRegistrationProps)
           <div className="space-y-4">
             <div>
               <label className="block text-sm font-medium mb-2">
-                エージェント名 (3-64文字、英数字のみ)
+                Agent Name (3-64 characters, alphanumeric only)
               </label>
               <input
                 type="text"
-                value={formData.domain}
-                onChange={(e) => handleInputChange("domain", e.target.value)}
-                placeholder="例: study-helper"
-                className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-                  errors.domain ? "border-red-500" : "border-gray-300"
+                value={formData.agentName}
+                onChange={(e) => handleInputChange("agentName", e.target.value)}
+                placeholder="e.g., StudyHelper"
+                className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 ${
+                  errors.agentName ? "border-red-500" : "border-gray-300"
                 }`}
               />
-              {errors.domain && (
-                <p className="text-sm text-red-600 mt-1">{errors.domain}</p>
+              {errors.agentName && (
+                <p className="text-sm text-red-600 mt-1">{errors.agentName}</p>
               )}
               <p className="text-xs text-gray-500 mt-1">
-                一度使用された名前は再利用できません
+                Once used, agent names cannot be reused
               </p>
             </div>
 
             <div>
               <label className="block text-sm font-medium mb-2">
-                メタデータURI
+                Metadata URI
               </label>
               <input
                 type="url"
                 value={formData.cardURI}
                 onChange={(e) => handleInputChange("cardURI", e.target.value)}
-                placeholder="ipfs://... または https://..."
-                className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                placeholder="ipfs://... or https://..."
+                className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 ${
                   errors.cardURI ? "border-red-500" : "border-gray-300"
                 }`}
               />
@@ -168,7 +221,7 @@ export function AgentRegistration({ onAgentRegistered }: AgentRegistrationProps)
                 <p className="text-sm text-red-600 mt-1">{errors.cardURI}</p>
               )}
               <p className="text-xs text-gray-500 mt-1">
-                エージェントの詳細情報を含むJSONファイルのURI
+                URI to JSON metadata containing agent details
               </p>
             </div>
           </div>
@@ -179,32 +232,94 @@ export function AgentRegistration({ onAgentRegistered }: AgentRegistrationProps)
             </div>
           )}
 
+          {!account ? (
+            <div className="bg-yellow-50 border border-yellow-200 p-3 rounded-lg">
+              <p className="text-sm text-yellow-700">Please connect your wallet to register an agent</p>
+            </div>
+          ) : null}
+
           <Button 
             onClick={handleRegister}
             disabled={!isFormValid || isRegistering}
-            className="w-full"
+            className="w-full bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700"
           >
             {isRegistering ? (
               <>
                 <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                エージェント登録中...
+                Registering Agent...
               </>
             ) : (
               <>
                 <Plus className="h-4 w-4 mr-2" />
-                エージェントを登録
+                Register Agent
               </>
             )}
           </Button>
+
+          {/* Success Message - Right below the button */}
+          {registeredAgent && (
+            <div className="mt-4 p-4 bg-green-50 border border-green-200 rounded-lg">
+              <div className="flex items-center space-x-2 mb-3">
+                <CheckCircle className="h-5 w-5 text-green-600" />
+                <span className="font-medium text-green-900">Registration Successful!</span>
+              </div>
+              
+              <div className="space-y-2 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Agent Name:</span>
+                  <span className="font-medium">{registeredAgent.name}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Agent ID:</span>
+                  <Badge variant="secondary" className="text-xs">{registeredAgent.id}</Badge>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Fee Paid:</span>
+                  <span className="font-medium">0.005 AVAX</span>
+                </div>
+              </div>
+
+              <div className="mt-3 pt-3 border-t border-green-200 space-y-2">
+                <div className="flex justify-between items-center">
+                  <span className="text-xs text-gray-600">Contract:</span>
+                  <a 
+                    href={`https://testnet.snowtrace.io/address/${IDENTITY_REGISTRY_ADDRESS}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded hover:bg-blue-100 border border-blue-200"
+                  >
+                    View Contract →
+                  </a>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-xs text-gray-600">Transaction:</span>
+                  <a 
+                    href={`https://testnet.snowtrace.io/tx/${registeredAgent.txHash}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded hover:bg-blue-100 border border-blue-200"
+                  >
+                    View on Snowtrace →
+                  </a>
+                </div>
+              </div>
+              
+              <div className="mt-3 text-center">
+                <Badge variant="outline" className="text-green-700 border-green-300">
+                  ✓ Ready for Client/Server/Validator roles
+                </Badge>
+              </div>
+            </div>
+          )}
         </CardContent>
       </Card>
 
       {/* Registration Process Steps */}
       <Card>
         <CardHeader>
-          <CardTitle>登録プロセス</CardTitle>
+          <CardTitle>Registration Process</CardTitle>
           <CardDescription>
-            エージェント登録の流れ
+            How agent registration works
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -214,8 +329,8 @@ export function AgentRegistration({ onAgentRegistered }: AgentRegistrationProps)
                 1
               </div>
               <div>
-                <p className="font-medium">名前の審査</p>
-                <p className="text-sm text-gray-600">3-64文字、英数字のみの制限をチェック</p>
+                <p className="font-medium">Name Validation</p>
+                <p className="text-sm text-gray-600">Check 3-64 characters, alphanumeric only constraints</p>
               </div>
             </div>
 
@@ -224,8 +339,8 @@ export function AgentRegistration({ onAgentRegistered }: AgentRegistrationProps)
                 2
               </div>
               <div>
-                <p className="font-medium">重複チェック</p>
-                <p className="text-sm text-gray-600">同じ名前がないか確認</p>
+                <p className="font-medium">Availability Check</p>
+                <p className="text-sm text-gray-600">Check if the agent name is available</p>
               </div>
             </div>
 
@@ -234,33 +349,14 @@ export function AgentRegistration({ onAgentRegistered }: AgentRegistrationProps)
                 3
               </div>
               <div>
-                <p className="font-medium">NFT発行</p>
-                <p className="text-sm text-gray-600">デジタル学生証として発行、どの役割でも使用可能</p>
+                <p className="font-medium">NFT Issuance</p>
+                <p className="text-sm text-gray-600">Register agent in IdentityRegistry with 0.005 AVAX fee</p>
               </div>
             </div>
           </div>
         </CardContent>
       </Card>
 
-      {/* Success Message */}
-      {registeredAgent && (
-        <Card className="border-green-200 bg-green-50">
-          <CardContent className="p-6">
-            <div className="flex items-center space-x-3">
-              <CheckCircle className="h-8 w-8 text-green-600" />
-              <div>
-                <p className="font-medium text-green-900">エージェント登録完了！</p>
-                <p className="text-sm text-green-700">
-                  {registeredAgent.name} (#{registeredAgent.id}) が正常に登録されました
-                </p>
-                <Badge variant="secondary" className="mt-2">
-                  @{registeredAgent.domain}
-                </Badge>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      )}
     </div>
   );
 }
