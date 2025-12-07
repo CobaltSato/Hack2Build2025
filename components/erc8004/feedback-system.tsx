@@ -82,7 +82,9 @@ export function FeedbackSystem({ agents = [] }: FeedbackSystemProps) {
         normalizedFetch,
         client,
         wallet,
-        PAYMENT_AMOUNTS.FEEDBACK.bigInt
+        {
+          maxValue: PAYMENT_AMOUNTS.FEEDBACK.bigInt,
+        }
       );
 
       // Mock API endpoint for feedback submission
