@@ -336,16 +336,6 @@ export default function ERC8004Page() {
                       </p>
                     </div>
                   </div>
-                  <div className="flex flex-wrap gap-3 text-xs text-stone-200">
-                    <Badge variant="outline" className="border-white/20 bg-white/10 text-white">
-                      <CheckCircle className="mr-2 h-3.5 w-3.5" />
-                      Production surface
-                    </Badge>
-                    <Badge variant="outline" className="border-white/20 bg-white/10 text-white">
-                      <Mountain className="mr-2 h-3.5 w-3.5" />
-                      Avalanche tuned
-                    </Badge>
-                  </div>
                 </CardTitle>
                 <CardDescription className="text-stone-300">
                   Use ERC-8004 to anchor agent identity, reputation, and validator coordination with Avalanche-native ergonomics.
