@@ -147,28 +147,6 @@ export default function ERC8004Page() {
     setUserRegisteredAgents((prev) => [...prev, agent.id]);
   };
 
-  const heroMetrics = [
-    {
-      label: "Registered Agents",
-      value: registeredAgents.length.toString().padStart(2, "0"),
-      detail: "live on Fuji",
-    },
-    {
-      label: "Validator Weight",
-      value: "27",
-      detail: "active validators",
-    },
-    {
-      label: "Finality Target",
-      value: "< 90s",
-      detail: "settlement SLA",
-    },
-    {
-      label: "AVAX Flow",
-      value: "6.4",
-      detail: "AVAX locked",
-    },
-  ];
 
   if (!wallet) {
     return (
@@ -374,20 +352,6 @@ export default function ERC8004Page() {
                 </CardDescription>
               </CardHeader>
               <CardContent className="p-8">
-                <div className="grid gap-6 md:grid-cols-4">
-                  {heroMetrics.map((metric) => (
-                    <div
-                      key={metric.label}
-                      className="rounded-2xl border border-white/10 bg-white/5 p-4 shadow-inner"
-                    >
-                      <p className="text-xs uppercase tracking-[0.3em] text-stone-400">{metric.label}</p>
-                      <p className="mt-2 text-3xl font-semibold text-white">{metric.value}</p>
-                      <p className="text-sm text-stone-300">{metric.detail}</p>
-                    </div>
-                  ))}
-                </div>
-
-                <Separator className="my-8 bg-white/10" />
 
                 <div className="grid gap-6 md:grid-cols-3">
                   {SYSTEM_PILLARS.map((pillar) => (
