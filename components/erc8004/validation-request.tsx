@@ -233,7 +233,7 @@ export function ValidationRequest() {
   // Generate data hash from original data using Web Crypto API
   const generateDataHash = async () => {
     if (!formData.originalData.trim()) {
-      alert("元データを入力してください");
+      alert("Please enter original data");
       return;
     }
 
@@ -252,8 +252,8 @@ export function ValidationRequest() {
       
       setFormData(prev => ({ ...prev, dataHash: hash }));
     } catch (error) {
-      console.error('ハッシュ生成エラー:', error);
-      alert("ハッシュの生成に失敗しました");
+      console.error('Hash generation error:', error);
+      alert('Failed to generate hash');
     }
   };
 
@@ -389,31 +389,31 @@ export function ValidationRequest() {
           
           switch (errorType) {
             case "ValidationError":
-              errorMessage = "❌ 検証処理でエラーが発生しました。入力内容を確認してください。";
+              errorMessage = "❌ Validation error occurred. Please check your input.";
               break;
             case "AgentNotFound":
-              errorMessage = "❌ エージェントが見つかりません。エージェント ID を確認してください。";
+              errorMessage = "❌ Agent not found. Please check the Agent ID.";
               break;
             case "ValidatorNotActive":
-              errorMessage = "❌ 選択されたバリデーターがアクティブではありません。アクティブなバリデーターを選択してください。";
+              errorMessage = "❌ Selected validator is not active. Please select an active validator.";
               break;
             case "InsufficientReward":
-              errorMessage = "❌ 報酬額が不足しています。最低 0.001 AVAX が必要です。";
+              errorMessage = "❌ Insufficient reward amount. Minimum 0.001 AVAX required.";
               break;
             case "InvalidDataHash":
-              errorMessage = "❌ 無効なデータハッシュ形式です。";
+              errorMessage = "❌ Invalid data hash format.";
               break;
             case "UserRejected":
-              errorMessage = "❌ ユーザーによってトランザクションが拒否されました。";
+              errorMessage = "❌ Transaction rejected by user.";
               break;
             case "InsufficientFunds":
-              errorMessage = "❌ AVAX残高が不足しています。";
+              errorMessage = "❌ Insufficient AVAX balance.";
               break;
             default:
               if (friendlyMessage.includes("AbiErrorSignatureNotFoundError")) {
-                errorMessage = "❌ 契約エラー: 不明な検証ルール。入力内容を確認してください。";
+                errorMessage = "❌ Contract error: Unknown validation rule. Please check your input.";
               } else {
-                errorMessage = "❌ 検証依頼の送信に失敗しました。";
+                errorMessage = "❌ Failed to submit validation request.";
               }
               break;
           }
@@ -439,22 +439,22 @@ export function ValidationRequest() {
       let errorMessage = "Failed to prepare validation request";
       if (error instanceof Error) {
         if (error.message.includes("does not exist")) {
-          errorMessage = "❌ エージェントが見つかりません。Token ID を確認してください。";
+          errorMessage = "❌ Agent not found. Please check the Token ID.";
         } else {
           const errorType = identifyError(error.message);
           
           switch (errorType) {
             case "ValidationError":
-              errorMessage = "❌ 検証処理でエラーが発生しました。入力内容を確認してください。";
+              errorMessage = "❌ Validation error occurred. Please check your input.";
               break;
             case "AgentNotFound":
-              errorMessage = "❌ エージェントが見つかりません。エージェント ID を確認してください。";
+              errorMessage = "❌ Agent not found. Please check the Agent ID.";
               break;
             default:
               if (error.message.includes("AbiErrorSignatureNotFoundError")) {
-                errorMessage = "❌ 契約エラー: 不明な検証ルール。入力内容を確認してください。";
+                errorMessage = "❌ Contract error: Unknown validation rule. Please check your input.";
               } else {
-                errorMessage = `❌ エラー: ${error.message}`;
+                errorMessage = `❌ Error: ${error.message}`;
               }
               break;
           }
@@ -657,10 +657,10 @@ export function ValidationRequest() {
 
           {/* Original Data Input */}
           <div>
-            <label className="block text-sm font-medium mb-2">元データ (Original Data)</label>
+            <label className="block text-sm font-medium mb-2">Original Data</label>
             <div className="space-y-2">
               <textarea
-                placeholder="検証してもらいたいデータを入力してください&#10;例:&#10;- AIの応答結果&#10;- 分析レポート&#10;- コード&#10;- JSON形式のデータ&#10;- その他の検証対象データ"
+                placeholder="Enter data to be validated&#10;Examples:&#10;- AI response results&#10;- Analysis reports&#10;- Code&#10;- JSON format data&#10;- Other validation target data"
                 value={formData.originalData}
                 onChange={(e) => {
                   setFormData(prev => ({ ...prev, originalData: e.target.value }));
@@ -671,19 +671,19 @@ export function ValidationRequest() {
                 rows={6}
               />
               <p className="text-xs text-gray-500">
-                🔍 このデータがバリデーターによって検証されます（品質評価、正確性確認など）
+                🔍 This data will be validated by validators (quality assessment, accuracy verification, etc.)
               </p>
             </div>
           </div>
 
           {/* Data Hash Input */}
           <div>
-            <label className="block text-sm font-medium mb-2">データハッシュ (Data Hash)</label>
+            <label className="block text-sm font-medium mb-2">Data Hash</label>
             <div className="space-y-2">
               <div className="flex gap-2">
                 <input
                   type="text"
-                  placeholder="元データからハッシュを生成 (0x...)"
+                  placeholder="Generate hash from original data (0x...)"
                   value={formData.dataHash}
                   onChange={(e) => {
                     setFormData(prev => ({ ...prev, dataHash: e.target.value }));
@@ -699,7 +699,7 @@ export function ValidationRequest() {
                   disabled={!formData.originalData.trim()}
                   className="bg-green-600 hover:bg-green-700 text-white"
                 >
-                  🔐 ハッシュ生成
+                  🔐 Generate Hash
                 </Button>
               </div>
               {errors.dataHash && (
@@ -707,21 +707,21 @@ export function ValidationRequest() {
               )}
               <div className="p-3 bg-blue-50 rounded-lg border border-blue-200">
                 <p className="text-xs text-blue-700 mb-1">
-                  <strong>💡 データハッシュとは？</strong>
+                  <strong>💡 What is a Data Hash?</strong>
                 </p>
                 <p className="text-xs text-blue-600 mb-2">
-                  元データをSHA-256で暗号化したもの。元データを秘密にしながら、バリデーターが同じデータであることを確認できます。
-                  ブロックチェーンには元データではなく、このハッシュのみが記録されます。
+                  SHA-256 encrypted version of original data. Keeps original data secret while allowing validators to verify it's the same data.
+                  Only this hash is recorded on blockchain, not the original data.
                 </p>
                 <div className="space-y-2">
                   <p className="text-xs text-orange-600">
-                    ⚠️ <strong>注意:</strong> データハッシュは事前に管理者による承認が必要な場合があります。
-                    承認されていないハッシュで検証依頼を送ると失敗します。
+                    ⚠️ <strong>Notice:</strong> Data hash may require pre-approval by administrators.
+                    Validation requests with unapproved hashes will fail.
                   </p>
                   <div className="p-2 bg-yellow-50 border border-yellow-200 rounded">
                     <p className="text-xs text-yellow-700">
-                      🚧 <strong>実装状況:</strong> 現在のコントラクトバージョンでは、データハッシュ事前承認機能が必要です。
-                      入力内容に問題がある場合、0xbeab6e29 や 0xa6ce15f6 エラーが発生することがあります。
+                      🚧 <strong>Implementation Status:</strong> Current contract version requires data hash pre-approval functionality.
+                      If there are input issues, 0xbeab6e29 or 0xa6ce15f6 errors may occur.
                     </p>
                   </div>
                 </div>
@@ -843,24 +843,24 @@ export function ValidationRequest() {
             </div>
             <div className="flex-1">
               <div className="flex items-center gap-2 mb-1">
-                <p className="font-bold text-green-800">検証依頼プロセス (Validation Process)</p>
+                <p className="font-bold text-green-800">Validation Process</p>
                 <Mountain className="h-4 w-4 text-green-500" />
               </div>
               <div className="space-y-1">
                 <p className="text-sm text-green-700">
-                  ✓ 元データを入力 → SHA-256ハッシュを自動生成
+                  ✓ Input original data → Auto-generate SHA-256 hash
                 </p>
                 <p className="text-sm text-green-700">
-                  ✓ 専門家バリデーターを選択してデータ検証を依頼
+                  ✓ Select expert validator and request data verification
                 </p>
                 <p className="text-sm text-green-700">
-                  ✓ 報酬を設定（最低 0.001 AVAX）
+                  ✓ Set reward (minimum 0.001 AVAX)
                 </p>
                 <p className="text-sm text-green-700">
-                  ✓ バリデーターが品質評価スコア（0-100）で応答
+                  ✓ Validator responds with quality assessment score (0-100)
                 </p>
                 <p className="text-sm text-green-700">
-                  ✓ ブロックチェーンで検証済みデータとして信頼性構築
+                  ✓ Build trust as verified data on blockchain
                 </p>
               </div>
             </div>
@@ -877,21 +877,21 @@ export function ValidationRequest() {
             </div>
             <div className="flex-1">
               <div className="flex items-center gap-2 mb-1">
-                <p className="font-bold text-blue-800">🔒 プライバシー保護システム</p>
+                <p className="font-bold text-blue-800">🔒 Privacy Protection System</p>
                 <Mountain className="h-4 w-4 text-blue-500" />
               </div>
               <div className="space-y-1">
                 <p className="text-sm text-blue-700">
-                  🔐 <strong>元データは秘匿:</strong> 実際のデータは非公開、ハッシュのみチェーンに記録
+                  🔐 <strong>Data Confidentiality:</strong> Actual data remains private, only hash recorded on chain
                 </p>
                 <p className="text-sm text-blue-700">
-                  🏢 <strong>オフチェーン検証:</strong> バリデーターは別途元データを受け取り検証
+                  🏢 <strong>Off-chain Verification:</strong> Validators receive and verify original data separately
                 </p>
                 <p className="text-sm text-blue-700">
-                  ✅ <strong>完全性保証:</strong> ハッシュが一致すれば、データ改ざん検出可能
+                  ✅ <strong>Integrity Guarantee:</strong> Matching hash enables data tampering detection
                 </p>
                 <p className="text-sm text-blue-700">
-                  🌐 <strong>分散検証:</strong> 複数のバリデーターによる独立した品質評価
+                  🌐 <strong>Distributed Verification:</strong> Independent quality assessment by multiple validators
                 </p>
               </div>
             </div>

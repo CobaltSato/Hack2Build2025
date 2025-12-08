@@ -170,64 +170,6 @@ export default function ERC8004Page() {
 
       {/* Main Content */}
       <div className="container mx-auto px-4 py-8 space-y-8">
-        {/* Hero Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <Card className="bg-gradient-to-br from-red-500/10 to-red-600/20 border-red-200 shadow-lg hover:shadow-xl transition-all">
-            <CardContent className="p-6">
-              <div className="flex items-center space-x-3">
-                <div className="p-3 bg-gradient-to-br from-red-500 to-red-600 rounded-xl">
-                  <Bot className="h-6 w-6 text-white" />
-                </div>
-                <div>
-                  <p className="text-2xl font-bold text-red-800">{SAMPLE_AGENTS.length}</p>
-                  <p className="text-sm text-red-600 font-medium">Registered Agents</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-          
-          <Card className="bg-gradient-to-br from-orange-500/10 to-orange-600/20 border-orange-200 shadow-lg hover:shadow-xl transition-all">
-            <CardContent className="p-6">
-              <div className="flex items-center space-x-3">
-                <div className="p-3 bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl">
-                  <Star className="h-6 w-6 text-white" />
-                </div>
-                <div>
-                  <p className="text-2xl font-bold text-orange-800">156</p>
-                  <p className="text-sm text-orange-600 font-medium">Evaluations</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-gradient-to-br from-red-500/10 to-orange-500/20 border-red-200 shadow-lg hover:shadow-xl transition-all">
-            <CardContent className="p-6">
-              <div className="flex items-center space-x-3">
-                <div className="p-3 bg-gradient-to-br from-red-500 to-orange-500 rounded-xl">
-                  <Shield className="h-6 w-6 text-white" />
-                </div>
-                <div>
-                  <p className="text-2xl font-bold text-red-800">{SAMPLE_VALIDATIONS.length}</p>
-                  <p className="text-sm text-red-600 font-medium">Validations</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-gradient-to-br from-orange-500/10 to-red-500/20 border-orange-200 shadow-lg hover:shadow-xl transition-all">
-            <CardContent className="p-6">
-              <div className="flex items-center space-x-3">
-                <div className="p-3 bg-gradient-to-br from-orange-500 to-red-500 rounded-xl">
-                  <Award className="h-6 w-6 text-white" />
-                </div>
-                <div>
-                  <p className="text-2xl font-bold text-orange-800">{userAgents.length}</p>
-                  <p className="text-sm text-orange-600 font-medium">Owned Agents</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
 
         {/* Main Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
@@ -258,7 +200,7 @@ export default function ERC8004Page() {
                   </div>
                 </CardTitle>
                 <CardDescription className="text-center text-red-700 text-lg">
-                  Decentralized AI Agent Identity, Reputation & Validation Protocol
+                  Discover, choose, and interact with AI agents across organizational boundaries without pre-existing trust
                 </CardDescription>
               </CardHeader>
               <CardContent className="p-8">
@@ -268,9 +210,9 @@ export default function ERC8004Page() {
                       <User className="h-8 w-8 text-white" />
                     </div>
                     <div>
-                      <h3 className="font-bold text-red-800 text-lg">Agent Registration</h3>
+                      <h3 className="font-bold text-red-800 text-lg">🏷️ Agent Identity Registry</h3>
                       <p className="text-red-600">
-                        Register AI agents as NFTs with 0.005 AVAX fee. Single agent type supports multiple roles: Client, Server, Validator.
+                        Register AI agents as ERC-721 NFTs with global unique identifiers. Agents can serve multiple roles dynamically: Client, Server, Validator.
                       </p>
                     </div>
                   </div>
@@ -280,9 +222,9 @@ export default function ERC8004Page() {
                       <Star className="h-8 w-8 text-white" />
                     </div>
                     <div>
-                      <h3 className="font-bold text-orange-800 text-lg">Evaluation System</h3>
+                      <h3 className="font-bold text-orange-800 text-lg">⭐ Reputation Registry</h3>
                       <p className="text-orange-600">
-                        Submit agent evaluations with USDC payments. Anti-spam protection with feedback authorization system.
+                        Post and fetch feedback signals with authorization-based spam protection. Supports both on-chain aggregation and off-chain analytics.
                       </p>
                     </div>
                   </div>
@@ -292,38 +234,44 @@ export default function ERC8004Page() {
                       <Shield className="h-8 w-8 text-white" />
                     </div>
                     <div>
-                      <h3 className="font-bold text-green-800 text-lg">Validation System</h3>
+                      <h3 className="font-bold text-green-800 text-lg">🛡️ Validation Registry</h3>
                       <p className="text-green-600">
-                        Expert quality assessment with validator staking. AVAX rewards for timely validation responses.
+                        Independent verification through stake-secured re-execution, zkML proofs, or TEE oracles. Validator incentives managed by specific protocols.
                       </p>
                     </div>
                   </div>
                 </div>
 
-                {/* Network Status */}
-                <div className="mt-8 bg-gradient-to-r from-red-50 via-orange-50 to-red-50 p-6 rounded-2xl border border-red-200">
-                  <div className="flex items-center justify-center gap-4 mb-4">
-                    <div className="flex items-center gap-2">
+                {/* Live Contract Information */}
+                <div className="mt-8 bg-gradient-to-r from-red-50 via-orange-50 to-red-50 p-6 rounded-2xl border border-red-200 shadow-lg">
+                  <div className="text-center mb-6">
+                    <div className="flex items-center justify-center gap-2 mb-4">
                       <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
-                      <span className="text-sm font-semibold text-red-800">Network Status: LIVE</span>
+                      <span className="text-lg font-bold text-red-800">Live on Avalanche Fuji Testnet</span>
+                      <Snowflake className="h-5 w-5 text-red-500 animate-pulse" />
                     </div>
-                    <div className="flex items-center gap-2">
-                      <Mountain className="h-4 w-4 text-red-500" />
-                      <span className="text-sm text-red-600">Avalanche Fuji Testnet</span>
-                    </div>
-                  </div>
-                  <div className="grid grid-cols-3 gap-4 text-center">
-                    <div>
-                      <p className="text-lg font-bold text-red-800">{SAMPLE_AGENTS.length}</p>
-                      <p className="text-sm text-red-600">Active Agents</p>
-                    </div>
-                    <div>
-                      <p className="text-lg font-bold text-orange-800">156</p>
-                      <p className="text-sm text-orange-600">Total Evaluations</p>
-                    </div>
-                    <div>
-                      <p className="text-lg font-bold text-green-800">98.7%</p>
-                      <p className="text-sm text-green-600">Network Uptime</p>
+                    <div className="grid md:grid-cols-3 gap-4 text-sm">
+                      <div className="bg-white/50 p-4 rounded-xl border border-red-200">
+                        <div className="flex items-center gap-2 mb-2">
+                          <User className="h-4 w-4 text-red-600" />
+                          <span className="font-semibold text-red-800">Identity Registry</span>
+                        </div>
+                        <code className="text-xs text-red-600 break-all">0x96eF5c6941d5f8dfB4a39F44E9238b85F01F4d29</code>
+                      </div>
+                      <div className="bg-white/50 p-4 rounded-xl border border-orange-200">
+                        <div className="flex items-center gap-2 mb-2">
+                          <Star className="h-4 w-4 text-orange-600" />
+                          <span className="font-semibold text-orange-800">Reputation Registry</span>
+                        </div>
+                        <code className="text-xs text-orange-600 break-all">0x7Bf906F3ae121c4a3a6b0F17abB2f445B4171015</code>
+                      </div>
+                      <div className="bg-white/50 p-4 rounded-xl border border-green-200">
+                        <div className="flex items-center gap-2 mb-2">
+                          <Shield className="h-4 w-4 text-green-600" />
+                          <span className="font-semibold text-green-800">Validation Registry</span>
+                        </div>
+                        <code className="text-xs text-green-600 break-all">0x3f15823aB159D46F9aA5E90A26E3Bbb1Cd84D45B</code>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -380,10 +328,10 @@ export default function ERC8004Page() {
                       <div className="p-2 bg-gradient-to-br from-red-500 to-orange-500 rounded-lg">
                         <CreditCard className="h-4 w-4 text-white" />
                       </div>
-                      <span className="font-medium text-red-800">USDC Payment System</span>
+                      <span className="font-medium text-red-800">AVAX-Based Economy</span>
                     </div>
                     <p className="text-sm text-red-600">
-                      USDC payments required for evaluations, preventing spam and ensuring quality
+                      Native AVAX payments for agent registration (0.005 AVAX), validation requests, and transaction fees
                     </p>
                   </div>
                 </div>
