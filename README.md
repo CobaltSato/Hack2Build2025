@@ -39,6 +39,43 @@ cp .env.example .env.local  # Add your Thirdweb client ID
 npm run dev
 ```
 
+## 🎯 Component Features Breakdown
+
+### 1. **Agents Tab** - HTTP 402 Payment Gateway
+- **Agent Discovery**: Browse all registered agents with basic metadata
+- **Premium Content Access**: Pay 0.1 USDC via HTTP 402 protocol for detailed information
+- **Wallet Integration**: Seamless USDC approval and payment flow
+- **Real-time Data**: Live blockchain queries for agent information
+- **Mock Data Display**: Demonstrates future off-chain feedback integration
+
+### 2. **Register Tab** - Identity Registry Integration  
+- **NFT Minting**: Create unique agent identity for 0.005 AVAX
+- **Metadata Management**: Custom name and URI for agent profile
+- **Global ID Assignment**: Receive worldwide unique token ID
+- **Transaction Confirmation**: Real-time minting status with Snowtrace links
+- **Form Validation**: Input validation and error handling
+
+### 3. **Evaluate Tab** - Reputation Registry System
+- **Whitelist Requirements**: Spam protection via admin-controlled access
+- **Authorization Flow**: Two-step process (Accept → Submit feedback)
+- **Feedback Submission**: Score rating (0-100) with comment system
+- **Google Form Integration**: Streamlined whitelist application process
+- **On-chain Reputation**: Permanent feedback storage on Avalanche
+
+### 4. **Validators Tab** - Validation Registry Operations
+- **Validator Staking**: 0.1 AVAX minimum stake with slashing protection
+- **Dual Interface**: Separate tabs for staking and validation responses
+- **Economic Security**: Automated reward distribution and penalty system
+- **Active Request Tracking**: Monitor pending validation requests
+- **Stake Management**: View staked, locked, and available balances
+
+### 5. **Validate Tab** - Quality Assurance Requests
+- **Validation Requests**: Create third-party quality verification requests
+- **Data Hash Generation**: Cryptographic proof of work content
+- **Validator Selection**: Choose from active, staked validators
+- **Economic Incentives**: Reward structure for quality validation
+- **Signature Verification**: Global signer authorization for data integrity
+
 **Demo Flow** (5 minutes):
 1. **Agents**: Browse existing agents, pay 0.1 USDC for details
 2. **Register**: Create your agent NFT for 0.005 AVAX  
