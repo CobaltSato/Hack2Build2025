@@ -13,7 +13,6 @@ import { AgentRegistration } from "@/components/erc8004/agent-registration";
 import { FeedbackSystem } from "@/components/erc8004/feedback-system";
 import { ValidationSystem } from "@/components/erc8004/validation-system";
 import { ValidationRequest } from "@/components/erc8004/validation-request";
-import { ValidatorStaking } from "@/components/erc8004/validator-staking";
 import { ValidatorRegistration } from "@/components/erc8004/validator-registration";
 import { DetailedEvaluation } from "@/components/erc8004/detailed-evaluation";
 import {
@@ -274,7 +273,7 @@ export default function ERC8004Page() {
       {/* Main Content */}
       <div className="relative z-10 container mx-auto px-4 py-10 space-y-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-8">
-          <TabsList className="grid w-full grid-cols-4 grid-rows-2 gap-2 rounded-2xl border border-white/10 bg-white/5 p-3 md:grid-cols-7 md:grid-rows-1">
+          <TabsList className="grid w-full grid-cols-3 grid-rows-2 gap-2 rounded-2xl border border-white/10 bg-white/5 p-3 md:grid-cols-6 md:grid-rows-1">
             <TabsTrigger
               value="overview"
               className="rounded-xl border border-transparent px-3 py-2 text-xs font-semibold uppercase tracking-[0.1em] text-white/70 transition-all data-[state=active]:border-white/40 data-[state=active]:bg-white/10 data-[state=active]:text-white"
@@ -304,12 +303,6 @@ export default function ERC8004Page() {
               className="rounded-xl border border-transparent px-3 py-2 text-xs font-semibold uppercase tracking-[0.1em] text-white/70 transition-all data-[state=active]:border-white/40 data-[state=active]:bg-white/10 data-[state=active]:text-white"
             >
               Validate
-            </TabsTrigger>
-            <TabsTrigger
-              value="staking"
-              className="rounded-xl border border-transparent px-3 py-2 text-xs font-semibold uppercase tracking-[0.1em] text-white/70 transition-all data-[state=active]:border-white/40 data-[state=active]:bg-white/10 data-[state=active]:text-white"
-            >
-              Stake
             </TabsTrigger>
             <TabsTrigger
               value="validator"
@@ -521,10 +514,6 @@ export default function ERC8004Page() {
             <ValidationSystem agents={registeredAgents} />
           </TabsContent>
 
-          {/* Staking Tab */}
-          <TabsContent value="staking" className="space-y-6">
-            <ValidatorStaking userAgents={userAgents} agents={registeredAgents} />
-          </TabsContent>
 
           {/* Validator Registration Tab */}
           <TabsContent value="validator" className="space-y-6">
