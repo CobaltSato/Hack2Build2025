@@ -189,17 +189,17 @@ export function DetailedEvaluation({ agentId, agentName, onClose }: DetailedEval
             contractDataResults.domain = tokenURI || `agent${tokenId}`;
             console.log(`✅ TokenURI: ${tokenURI}`);
           } catch (e) {
-            console.log(`ℹ️ tokenURI() not available for token ${tokenId}: ${e.message}`);
+            console.log(`ℹ️ tokenURI() not available for token ${tokenId}: ${e instanceof Error ? e.message : String(e)}`);
           }
 
         } catch (ownerError) {
-          console.log(`ℹ️ Token ${tokenId} does not exist: ${ownerError.message}`);
+          console.log(`ℹ️ Token ${tokenId} does not exist: ${ownerError instanceof Error ? ownerError.message : String(ownerError)}`);
           contractDataResults.exists = false;
           contractDataResults.isMock = false; // It's not mock, token just doesn't exist
         }
 
       } catch (contractError) {
-        console.log(`❌ Contract not responsive: ${contractError.message}`);
+        console.log(`❌ Contract not responsive: ${contractError instanceof Error ? contractError.message : String(contractError)}`);
         contractDataResults.contractResponsive = false;
         contractDataResults.isMock = true;
       }
@@ -264,7 +264,7 @@ export function DetailedEvaluation({ agentId, agentName, onClose }: DetailedEval
             console.log(`✅ ${name} successful:`, result);
             break; // Found working method, stop trying others
           } catch (e) {
-            console.log(`ℹ️ ${name} not available: ${e.message}`);
+            console.log(`ℹ️ ${name} not available: ${e instanceof Error ? e.message : String(e)}`);
           }
         }
 
@@ -279,7 +279,7 @@ export function DetailedEvaluation({ agentId, agentName, onClose }: DetailedEval
           contractDataResults.approved = approved;
           console.log(`✅ Token approved to: ${approved}`);
         } catch (e) {
-          console.log(`ℹ️ getApproved() not available: ${e.message}`);
+          console.log(`ℹ️ getApproved() not available: ${e instanceof Error ? e.message : String(e)}`);
         }
 
         // Try to get creation timestamp if available
@@ -292,7 +292,7 @@ export function DetailedEvaluation({ agentId, agentName, onClose }: DetailedEval
           contractDataResults.createdAt = Number(createdAt);
           console.log(`✅ Token created at: ${new Date(Number(createdAt) * 1000).toISOString()}`);
         } catch (e) {
-          console.log(`ℹ️ getTokenCreationTime() not available: ${e.message}`);
+          console.log(`ℹ️ getTokenCreationTime() not available: ${e instanceof Error ? e.message : String(e)}`);
         }
       }
 
@@ -309,7 +309,7 @@ export function DetailedEvaluation({ agentId, agentName, onClose }: DetailedEval
           console.log(`✅ Owner has ${contractBalance} tokens`);
         }
       } catch (e) {
-        console.log(`ℹ️ balanceOf() not available: ${e.message}`);
+        console.log(`ℹ️ balanceOf() not available: ${e instanceof Error ? e.message : String(e)}`);
       }
 
       // NOTE: Reputation and Validation data will be fetched after payment
@@ -404,7 +404,7 @@ export function DetailedEvaluation({ agentId, agentName, onClose }: DetailedEval
         evaluationData.feedbackCount = Number(feedbackCount);
         console.log(`✅ Feedback count: ${feedbackCount}`);
       } catch (e) {
-        console.log(`ℹ️ No feedback count available: ${e.message}`);
+        console.log(`ℹ️ No feedback count available: ${e instanceof Error ? e.message : String(e)}`);
       }
 
       // Try to get recent feedback
@@ -427,7 +427,7 @@ export function DetailedEvaluation({ agentId, agentName, onClose }: DetailedEval
           console.log(`✅ Retrieved ${recentFeedback.length} feedback entries`);
         }
       } catch (e) {
-        console.log(`ℹ️ No recent feedback available: ${e.message}`);
+        console.log(`ℹ️ No recent feedback available: ${e instanceof Error ? e.message : String(e)}`);
         // Create fallback feedback data
         evaluationData.recentFeedback = [
           {
@@ -442,7 +442,7 @@ export function DetailedEvaluation({ agentId, agentName, onClose }: DetailedEval
       }
 
     } catch (reputationError) {
-      console.log(`ℹ️ ReputationRegistry not accessible: ${reputationError.message}`);
+      console.log(`ℹ️ ReputationRegistry not accessible: ${reputationError instanceof Error ? reputationError.message : String(reputationError)}`);
     }
 
     // Try to get validation data from ValidationRegistry
@@ -475,11 +475,11 @@ export function DetailedEvaluation({ agentId, agentName, onClose }: DetailedEval
           console.log(`✅ Retrieved ${validationHistory.length} validation entries`);
         }
       } catch (e) {
-        console.log(`ℹ️ No validation history available: ${e.message}`);
+        console.log(`ℹ️ No validation history available: ${e instanceof Error ? e.message : String(e)}`);
       }
 
     } catch (validationError) {
-      console.log(`ℹ️ ValidationRegistry not accessible: ${validationError.message}`);
+      console.log(`ℹ️ ValidationRegistry not accessible: ${validationError instanceof Error ? validationError.message : String(validationError)}`);
     }
 
     // Generate categories based on available data
