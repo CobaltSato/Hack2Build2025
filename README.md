@@ -1,78 +1,114 @@
-# x402 Starter Kit
+# ERC-8004 Hackathon Demo - Trustless Agent Registry
 
-HTTP 402 payment integration with Thirdweb on Avalanche Fuji testnet.
+🏆 **Hackathon Project**: A complete implementation of ERC-8004 Trustless Agent protocol with HTTP 402 Payment Required standard on Avalanche Fuji testnet.
 
-## Setup
+## 🚀 What is ERC-8004?
+
+ERC-8004 enables **cross-organizational agent discovery and trust** through three core registries:
+
+1. **Identity Registry**: Agent discovery via ERC-721 NFTs with global unique IDs
+2. **Reputation Registry**: Client-server feedback system with on-chain reputation
+3. **Validation Registry**: Independent work quality verification by staked validators
+
+## 🎯 Hackathon Demo Features
+
+### Live on Avalanche Fuji
+- **Real Contracts**: Fully deployed and functional ERC-8004 registries
+- **Agent Registration**: Mint agent NFTs for 0.005 AVAX
+- **Feedback System**: Submit and authorize evaluations with spam protection
+- **Validator Network**: Stake 0.1 AVAX to become a quality validator
+- **HTTP 402 Payments**: USDC-gated premium content access
+
+## 🎮 Try the Demo Now
+
+### 🌐 Live Demo
+**URL**: [Your deployed URL here]
+
+### 💳 Get Test Funds
+1. **AVAX**: [Fuji Faucet](https://faucet.avax.network/) - for gas and registration fees
+2. **USDC**: [Avalanche Bridge](https://bridge.avax.network/) - for HTTP 402 payments
+
+### 🏃‍♂️ Quick Start (Local Development)
 
 ```bash
-git clone https://github.com/federiconardelli7/x402-starter-kit.git
+# Clone and run
+git clone <repo-url>
 cd x402-starter-kit
 npm install
-```
-
-## Thirdweb Setup
-
-### 1. Create Thirdweb Account
-1. Go to [Thirdweb Dashboard](https://thirdweb.com/dashboard)
-2. **Log in with your wallet** (connect your wallet to the dashboard)
-3. Create a new project or use an existing one
-4. Get your **Client ID** and **Secret Key** from the project
-
-### 2. Set Up Facilitator Wallet (ERC4337 Smart Account)
-
-**IMPORTANT:** The `THIRDWEB_SERVER_WALLET_ADDRESS` is the **facilitator address** used for transaction processing.
-
-**You MUST use an ERC4337 Smart Account:**
-1. In the Thirdweb dashboard, go to **Server Wallets** section
-2. Click the switch button **Show ERC4337 Smart Account** 
-3. Switch to the network (for example Avalanche Fuji Testnet)
-3. Copy the smart account address - this will be your `THIRDWEB_SERVER_WALLET_ADDRESS`
-4. Send some testnet token to that address that will pay the gas fee.
-
-**IMPORTANT:** Do NOT use ERC-7702 accounts. Only ERC4337 Smart Accounts are supported as facilitators for some networks.
-
-## Configuration
-
-Copy `.env.example` to `.env.local`:
-
-```bash
-cp .env.example .env.local
-```
-
-Fill in the required values:
-
-- `NEXT_PUBLIC_THIRDWEB_CLIENT_ID` - Your Thirdweb client ID 
-- `THIRDWEB_SECRET_KEY` - Your Thirdweb secret key 
-- `THIRDWEB_SERVER_WALLET_ADDRESS` - **Facilitator address** (ERC4337 Smart Account address)
-- `MERCHANT_WALLET_ADDRESS` - Payment recipient wallet address 
-
-## Development
-
-```bash
+cp .env.example .env.local  # Add your Thirdweb client ID
 npm run dev
 ```
 
-Open http://localhost:3000
+**Demo Flow** (5 minutes):
+1. **Agents**: Browse existing agents, pay 0.1 USDC for details
+2. **Register**: Create your agent NFT for 0.005 AVAX  
+3. **Evaluate**: Submit feedback between agents (requires whitelist)
+4. **Validators**: Stake 0.1 AVAX to become a validator
+5. **Validate**: Request and respond to quality validations
 
-## Build
+## 📋 Hackathon Judging Criteria
 
-```bash
-npm run build
-npm start
-```
+### ✅ Technical Innovation
+- **Full ERC-8004 Implementation**: All three registries working on live testnet
+- **Cross-Protocol Integration**: ERC-8004 + HTTP 402 Payment Required + Avalanche
+- **Real Economic Incentives**: Staking, slashing, and payment mechanisms
 
-## Features
+### ✅ User Experience  
+- **Intuitive UI**: Clean, responsive design with real-time feedback
+- **Wallet Integration**: Seamless MetaMask connection and transaction flow
+- **Educational**: Clear explanation of concepts while using
 
-- HTTP 402 payment protocol implementation
-- Two payment tiers (Basic: $0.01, Premium: $0.15)
-- Automatic signature normalization for Avalanche Fuji
-- Real-time transaction logging
-- Modern UI with shadcn components
+### ✅ Practical Use Cases
+- **Agent Discovery**: Find and interact with agents across organizations
+- **Trust Building**: Reputation system for service quality
+- **Quality Assurance**: Independent validation for high-stakes work
 
-## Technical Stack
+## 📊 Contract Addresses (Avalanche Fuji)
 
-- Next.js 16
-- Thirdweb SDK v5
-- TypeScript
-- Tailwind CSS
-- shadcn/ui components
+| Contract | Address | Purpose |
+|----------|---------|---------|
+| **Identity Registry** | `0x96eF5c6941d5f8dfB4a39F44E9238b85F01F4d29` | Agent NFT registration |
+| **Reputation Registry** | `0x7Bf906F3ae121c4a3a6b0F17abB2f445B4171015` | Feedback & reputation |
+| **Validation Registry** | `0x488b53ef50aeB8ae97dE7Bb31C06Fa5e8024ed94` | Quality validation |
+
+🔍 **Verify on Snowtrace**: [c.testnet.snowtrace.io](https://c.testnet.snowtrace.io/)
+
+## 🏗️ Architecture Highlights
+
+### Smart Contract Security
+- **Ownership Verification**: Only agent owners can perform sensitive operations
+- **Economic Security**: Stake-backed validators with slashing penalties  
+- **Anti-Spam**: Whitelist protection for feedback submissions
+- **Access Control**: Multi-layered permission system
+
+### Frontend Innovation
+- **Real-time Validation**: Live agent lookup from blockchain
+- **Payment Integration**: HTTP 402 with automatic USDC handling
+- **Transaction Feedback**: Clear success/failure messaging with Snowtrace links
+- **Responsive Design**: Mobile-friendly interface
+
+## 🎉 Hackathon Achievements
+
+✅ **Full ERC-8004 Implementation**: Complete three-registry system  
+✅ **Live Deployment**: Working contracts on Avalanche Fuji  
+✅ **Economic Incentives**: Real staking, fees, and rewards  
+✅ **Cross-Protocol**: ERC-8004 + HTTP 402 Payment Required + Avalanche integration  
+✅ **Production Ready**: Security considerations and error handling  
+✅ **Educational**: Clear UX that teaches ERC-8004 concepts  
+
+## 🔗 Resources
+
+- **[ERC-8004 Specification](https://eips.ethereum.org/EIPS/eip-8004)** - Official proposal
+- **[Demo Video](link-to-your-video)** - 5-minute walkthrough
+- **[Presentation Slides](link-to-slides)** - Technical overview
+- **[Avalanche Docs](https://docs.avax.network/)** - Network details
+
+## 🏆 Built for Hackathon
+
+**Team**: [Your team name]  
+**Track**: [Hackathon track]  
+**Built with**: Next.js, Thirdweb, Tailwind CSS, ERC-8004, HTTP 402 Payment Required, Avalanche
+
+---
+
+🚀 **Enabling trustless agent economies across organizational boundaries**
