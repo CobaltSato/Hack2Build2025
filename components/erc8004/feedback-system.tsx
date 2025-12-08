@@ -606,71 +606,71 @@ export function FeedbackSystem({ agents = [] }: FeedbackSystemProps) {
   return (
     <div className="space-y-6">
       {/* Whitelist Requirements */}
-      <Card className="bg-gradient-to-r from-yellow-50 to-orange-50 border-yellow-200 shadow-lg">
-        <CardHeader className="bg-gradient-to-r from-yellow-500/10 to-orange-500/10 border-b border-yellow-200">
+      <Card className="erc-panel">
+        <CardHeader className="erc-panel-header">
           <CardTitle className="flex items-center space-x-3">
-            <div className="p-2 bg-gradient-to-br from-yellow-500 to-orange-500 rounded-xl">
+            <div className="p-2 rounded-xl bg-gradient-to-br from-[#b22c2f] to-[#6f1014]">
               <Shield className="h-5 w-5 text-white" />
             </div>
             <div>
-              <span className="text-yellow-800">⚠️ Feedback Submission Requirements</span>
-              <div className="flex items-center gap-2 mt-1">
-                <Mountain className="h-3 w-3 text-yellow-500" />
-                <span className="text-xs text-yellow-600 font-medium">ERC-8004 Trustless Agent Protocol</span>
+              <span className="text-white">⚠️ Feedback Submission Requirements</span>
+              <div className="mt-1 flex items-center gap-2 text-xs uppercase tracking-[0.3em] text-rose-100/80">
+                <Mountain className="h-3 w-3 text-rose-100" />
+                <span className="font-medium">ERC-8004 Trustless Agent Protocol</span>
               </div>
             </div>
           </CardTitle>
-          <CardDescription className="text-yellow-700">
+          <CardDescription className="erc-panel-description">
             Important requirements for submitting feedback in the ERC-8004 system
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="bg-yellow-100 p-4 rounded-lg border border-yellow-300">
-            <div className="flex items-center space-x-2 mb-3">
-              <Shield className="h-4 w-4 text-yellow-700" />
-              <span className="font-bold text-yellow-900">Whitelist Required</span>
+          <div className="erc-panel-subtle">
+            <div className="mb-3 flex items-center space-x-2">
+              <Shield className="h-4 w-4 text-rose-200" />
+              <span className="font-semibold text-white">Whitelist Required</span>
             </div>
-            <p className="text-sm text-yellow-800 mb-3">
+            <p className="mb-3 text-sm text-stone-200">
               <strong>Your wallet address must be whitelisted</strong> to submit feedback in the ERC-8004 ReputationRegistry.
             </p>
             
-            <div className="space-y-2 mb-4">
-              <p className="text-xs text-yellow-700 font-medium">Submission Requirements:</p>
-              <div className="grid md:grid-cols-2 gap-2 text-xs text-yellow-700">
+            <div className="mb-4 space-y-2">
+              <p className="text-xs uppercase tracking-[0.3em] text-stone-400">Submission Requirements:</p>
+              <div className="grid gap-2 text-xs text-stone-200 md:grid-cols-2">
                 <div className="space-y-1">
                   <div className="flex items-center space-x-1">
-                    <CheckCircle className="h-3 w-3 text-green-600" />
+                    <CheckCircle className="h-3 w-3 text-emerald-300" />
                     <span>Your address must be whitelisted by an admin</span>
                   </div>
                   <div className="flex items-center space-x-1">
-                    <CheckCircle className="h-3 w-3 text-green-600" />
+                    <CheckCircle className="h-3 w-3 text-emerald-300" />
                     <span>Server agent must have authorized your client agent via acceptFeedback()</span>
                   </div>
                   <div className="flex items-center space-x-1">
-                    <CheckCircle className="h-3 w-3 text-green-600" />
+                    <CheckCircle className="h-3 w-3 text-emerald-300" />
                     <span>Both client and server agents must exist in IdentityRegistry</span>
                   </div>
                 </div>
                 <div className="space-y-1">
                   <div className="flex items-center space-x-1">
-                    <CheckCircle className="h-3 w-3 text-green-600" />
+                    <CheckCircle className="h-3 w-3 text-emerald-300" />
                     <span>Score must be between 0-100</span>
                   </div>
                   <div className="flex items-center space-x-1">
-                    <CheckCircle className="h-3 w-3 text-green-600" />
+                    <CheckCircle className="h-3 w-3 text-emerald-300" />
                     <span>No duplicate feedback (one feedback per client-server pair)</span>
                   </div>
                 </div>
               </div>
             </div>
 
-            <div className="flex items-center justify-between pt-3 border-t border-yellow-300">
-              <span className="text-xs text-yellow-700">Need whitelist access?</span>
+            <div className="flex flex-col gap-3 border-t border-white/10 pt-3 text-stone-300 sm:flex-row sm:items-center sm:justify-between">
+              <span className="text-xs uppercase tracking-[0.3em] text-stone-500">Need whitelist access?</span>
               <a 
                 href="https://docs.google.com/forms/d/e/1FAIpQLSdE444WHE3jwD9-NigY03ngfQ-A332GrGsRuKUNrxkxpGtG_w/viewform?usp=dialog"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center space-x-2 bg-gradient-to-r from-yellow-600 to-orange-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:from-yellow-700 hover:to-orange-700 transition-all shadow-md hover:shadow-lg"
+                className="erc-inline-pill bg-gradient-to-r from-[#b22c2f] to-[#6f1014] text-white hover:from-[#c63a3c] hover:to-[#7d1518]"
               >
                 <span>📝 Apply for Whitelist</span>
                 <ExternalLink className="h-3 w-3" />
@@ -681,8 +681,8 @@ export function FeedbackSystem({ agents = [] }: FeedbackSystemProps) {
       </Card>
 
       {/* Real Agent Lookup Section */}
-      <Card className="bg-gradient-to-br from-blue-500/5 to-blue-600/10 border-blue-200">
-        <CardHeader className="bg-gradient-to-r from-blue-500/5 to-blue-600/5 border-b border-blue-200">
+      <Card className="erc-panel">
+        <CardHeader className="erc-panel-header">
           <CardTitle className="flex items-center space-x-3">
             <div className="p-2 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl">
               <Search className="h-5 w-5 text-white" />
@@ -695,7 +695,7 @@ export function FeedbackSystem({ agents = [] }: FeedbackSystemProps) {
               </div>
             </div>
           </CardTitle>
-          <CardDescription className="text-blue-700">
+          <CardDescription className="erc-panel-description">
             Search for actual registered agents by their Token ID
           </CardDescription>
         </CardHeader>
@@ -764,8 +764,8 @@ export function FeedbackSystem({ agents = [] }: FeedbackSystemProps) {
       </Card>
 
       {/* Accept Feedback Section */}
-      <Card className="bg-gradient-to-br from-green-500/5 to-green-600/10 border-green-200">
-        <CardHeader className="bg-gradient-to-r from-green-500/5 to-green-600/5 border-b border-green-200">
+      <Card className="erc-panel">
+        <CardHeader className="erc-panel-header">
           <CardTitle className="flex items-center space-x-3">
             <div className="p-2 bg-gradient-to-br from-green-500 to-green-600 rounded-xl">
               <CheckCircle className="h-5 w-5 text-white" />
@@ -778,7 +778,7 @@ export function FeedbackSystem({ agents = [] }: FeedbackSystemProps) {
               </div>
             </div>
           </CardTitle>
-          <CardDescription className="text-green-700">
+          <CardDescription className="erc-panel-description">
             As a Server, authorize specific Client agents to evaluate your services
           </CardDescription>
         </CardHeader>
@@ -934,7 +934,7 @@ export function FeedbackSystem({ agents = [] }: FeedbackSystemProps) {
       </Card>
 
       {/* Requirements Info */}
-      <Card className="bg-gradient-to-r from-blue-50 via-purple-50 to-blue-50 border-blue-200 shadow-lg">
+      <Card className="erc-panel">
         <CardContent className="p-5">
           <div className="flex items-center space-x-4">
             <div className="p-3 bg-gradient-to-br from-blue-500 to-purple-500 rounded-xl">
@@ -1002,8 +1002,8 @@ export function FeedbackSystem({ agents = [] }: FeedbackSystemProps) {
       </Card>
 
       {/* Authorization Step */}
-      <Card className="bg-gradient-to-br from-red-500/5 to-orange-500/10 border-red-200">
-        <CardHeader className="bg-gradient-to-r from-red-500/5 to-orange-500/5 border-b border-red-200">
+      <Card className="erc-panel">
+        <CardHeader className="erc-panel-header">
           <CardTitle className="flex items-center space-x-3">
             <div className="p-2 bg-gradient-to-br from-red-500 to-red-600 rounded-xl">
               <CheckCircle className="h-5 w-5 text-white" />
@@ -1016,7 +1016,7 @@ export function FeedbackSystem({ agents = [] }: FeedbackSystemProps) {
               </div>
             </div>
           </CardTitle>
-          <CardDescription className="text-red-700">
+          <CardDescription className="erc-panel-description">
             Confirm evaluation permissions before submitting feedback
           </CardDescription>
         </CardHeader>
@@ -1109,8 +1109,8 @@ export function FeedbackSystem({ agents = [] }: FeedbackSystemProps) {
       </Card>
 
       {/* Feedback Submission */}
-      <Card className="bg-gradient-to-br from-orange-500/5 to-red-500/10 border-orange-200">
-        <CardHeader className="bg-gradient-to-r from-orange-500/5 to-red-500/5 border-b border-orange-200">
+      <Card className="erc-panel">
+        <CardHeader className="erc-panel-header">
           <CardTitle className="flex items-center space-x-3">
             <div className="p-2 bg-gradient-to-br from-orange-500 to-red-500 rounded-xl">
               <Star className="h-5 w-5 text-white" />
@@ -1123,7 +1123,7 @@ export function FeedbackSystem({ agents = [] }: FeedbackSystemProps) {
               </div>
             </div>
           </CardTitle>
-          <CardDescription className="text-orange-700">
+          <CardDescription className="erc-panel-description">
             Submit evaluation score and comment to ReputationRegistry contract
           </CardDescription>
         </CardHeader>
@@ -1201,7 +1201,7 @@ export function FeedbackSystem({ agents = [] }: FeedbackSystemProps) {
 
       {/* Submission Result */}
       {submissionResult && (
-        <Card className={`border-2 ${submissionResult.success ? 'border-green-200 bg-green-50' : 'border-red-200 bg-red-50'}`}>
+        <Card className={`erc-panel ${submissionResult.success ? 'border-emerald-500/30' : 'border-rose-500/30'}`}>
           <CardContent className="p-6">
             <div className="flex items-start space-x-3">
               {submissionResult.success ? (

@@ -153,8 +153,8 @@ export function ValidationSystem({ agents = [] }: ValidationSystemProps) {
   return (
     <div className="space-y-6">
       {/* Validation Request Form */}
-      <Card className="bg-gradient-to-br from-red-500/5 to-orange-500/10 border-red-200">
-        <CardHeader className="bg-gradient-to-r from-red-500/5 to-orange-500/5 border-b border-red-200">
+      <Card className="erc-panel">
+        <CardHeader className="erc-panel-header">
           <CardTitle className="flex items-center space-x-3">
             <div className="p-2 bg-gradient-to-br from-red-500 to-red-600 rounded-xl">
               <Shield className="h-5 w-5 text-white" />
@@ -167,7 +167,7 @@ export function ValidationSystem({ agents = [] }: ValidationSystemProps) {
               </div>
             </div>
           </CardTitle>
-          <CardDescription className="text-red-700">
+          <CardDescription className="erc-panel-description">
             Request work quality validation by experts
           </CardDescription>
         </CardHeader>
@@ -272,8 +272,8 @@ export function ValidationSystem({ agents = [] }: ValidationSystemProps) {
       </Card>
 
       {/* Validation Requests List */}
-      <Card className="bg-gradient-to-br from-orange-500/5 to-red-500/10 border-orange-200">
-        <CardHeader className="bg-gradient-to-r from-orange-500/5 to-red-500/5 border-b border-orange-200">
+      <Card className="erc-panel">
+        <CardHeader className="erc-panel-header">
           <CardTitle className="flex items-center space-x-3">
             <div className="p-2 bg-gradient-to-br from-orange-500 to-red-500 rounded-xl">
               <Award className="h-5 w-5 text-white" />
@@ -286,7 +286,7 @@ export function ValidationSystem({ agents = [] }: ValidationSystemProps) {
               </div>
             </div>
           </CardTitle>
-          <CardDescription className="text-orange-700">
+          <CardDescription className="erc-panel-description">
             Current validation request status ({requests.length} items)
           </CardDescription>
         </CardHeader>
@@ -385,8 +385,8 @@ export function ValidationSystem({ agents = [] }: ValidationSystemProps) {
       </Card>
 
       {/* Process Timeline */}
-      <Card className="bg-gradient-to-br from-red-500/5 to-orange-500/5 border-red-200">
-        <CardHeader className="bg-gradient-to-r from-red-500/5 to-orange-500/5 border-b border-red-200">
+      <Card className="erc-panel">
+        <CardHeader className="erc-panel-header">
           <CardTitle className="flex items-center space-x-3">
             <div className="p-2 bg-gradient-to-br from-red-500 to-orange-500 rounded-xl">
               <Clock className="h-5 w-5 text-white" />
@@ -399,7 +399,7 @@ export function ValidationSystem({ agents = [] }: ValidationSystemProps) {
               </div>
             </div>
           </CardTitle>
-          <CardDescription className="text-red-700">
+          <CardDescription className="erc-panel-description">
             Validation system workflow (completes within 4-5 hours)
           </CardDescription>
         </CardHeader>

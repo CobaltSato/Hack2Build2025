@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useMemo, useState } from "react";
 import { createThirdwebClient } from "thirdweb";
 import { ConnectButton, useActiveWallet, useActiveAccount } from "thirdweb/react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -16,19 +16,19 @@ import { ValidationRequest } from "@/components/erc8004/validation-request";
 import { ValidatorStaking } from "@/components/erc8004/validator-staking";
 import { ValidatorRegistration } from "@/components/erc8004/validator-registration";
 import { DetailedEvaluation } from "@/components/erc8004/detailed-evaluation";
-import { 
-  User, 
-  Star, 
-  Shield, 
-  Bot, 
-  CreditCard, 
-  CheckCircle, 
-  ExternalLink,
+import {
+  type LucideIcon,
+  User,
+  Star,
+  Shield,
+  Bot,
+  CreditCard,
+  CheckCircle,
   Snowflake,
   Mountain,
   Award,
-  Plus,
-  Activity
+  Activity,
+  ExternalLink,
 } from "lucide-react";
 
 const client = createThirdwebClient({
@@ -42,6 +42,69 @@ const CONTRACTS = {
   ValidationRegistry: "0x488b53ef50aeB8ae97dE7Bb31C06Fa5e8024ed94",
 } as const;
 
+type ContractMeta = {
+  title: string;
+  address: string;
+  icon: LucideIcon;
+  accent: string;
+  href: string;
+};
+
+const CONTRACT_METADATA: ContractMeta[] = [
+  {
+    title: "Identity Registry",
+    address: CONTRACTS.IdentityRegistry,
+    icon: User,
+    accent: "text-rose-200",
+    href: `https://c.testnet.snowtrace.io/address/${CONTRACTS.IdentityRegistry}`,
+  },
+  {
+    title: "Reputation Registry",
+    address: CONTRACTS.ReputationRegistry,
+    icon: Star,
+    accent: "text-amber-200",
+    href: `https://c.testnet.snowtrace.io/address/${CONTRACTS.ReputationRegistry}`,
+  },
+  {
+    title: "Validation Registry",
+    address: CONTRACTS.ValidationRegistry,
+    icon: Shield,
+    accent: "text-emerald-200",
+    href: `https://c.testnet.snowtrace.io/address/${CONTRACTS.ValidationRegistry}`,
+  },
+];
+
+type SystemPillar = {
+  icon: LucideIcon;
+  title: string;
+  description: string;
+  gradient: string;
+};
+
+const SYSTEM_PILLARS: SystemPillar[] = [
+  {
+    icon: User,
+    title: "Agent Identity",
+    description:
+      "Registry-backed identity anchors with attestable domains and deterministic NFTs across Avalanche subnets.",
+    gradient: "from-[#a73438]/70 to-[#4d0a0c]/90",
+  },
+  {
+    icon: Star,
+    title: "Reputation Depth",
+    description:
+      "Granular scoring layered with whitelist controls, anomaly detection, and client/server pair analytics.",
+    gradient: "from-[#b06128]/70 to-[#412310]/90",
+  },
+  {
+    icon: Shield,
+    title: "Validation Network",
+    description:
+      "Stake-weighted validator actions with dispute windows tuned for sub-minute Avalanche finality guarantees.",
+    gradient: "from-[#2e5443]/70 to-[#0f1f18]/90",
+  },
+];
+
 // Agent data for TokenIDs 61-65 (JSON management)
 const AGENTS_61_TO_65 = [
   { id: 61, name: "Agent61", domain: "agent61", owner: "0x1234...5678", type: "AI" },
@@ -51,111 +114,178 @@ const AGENTS_61_TO_65 = [
   { id: 65, name: "Agent65", domain: "agent65", owner: "0x5678...9012", type: "AI" },
 ];
 
-
 export default function ERC8004Page() {
   const wallet = useActiveWallet();
   const account = useActiveAccount();
   const [activeTab, setActiveTab] = useState("overview");
-  const [userAgents, setUserAgents] = useState<number[]>([]);
+  const [userRegisteredAgents, setUserRegisteredAgents] = useState<number[]>([]);
   const [registeredAgents, setRegisteredAgents] = useState(AGENTS_61_TO_65);
   const [selectedAgentForEvaluation, setSelectedAgentForEvaluation] = useState<{
     id: string;
     name: string;
   } | null>(null);
 
-  // Mock data for user's agents (normally would come from contract)
-  useEffect(() => {
-    if (account?.address) {
-      // Simulate user owning agents 61 and 63 from the current range
-      setUserAgents([61, 63]);
+  const userAgents = useMemo(() => {
+    const mockAgents = account?.address ? [61, 63] : [];
+    if (!mockAgents.length && !userRegisteredAgents.length) {
+      return [];
     }
-  }, [account?.address]);
+    const combined = new Set<number>([...mockAgents, ...userRegisteredAgents]);
+    return Array.from(combined).sort((a, b) => a - b);
+  }, [account?.address, userRegisteredAgents]);
 
   const handleAgentRegistered = (agent: { id: number; name: string; domain: string }) => {
     const newAgent = {
       id: agent.id,
       name: agent.name,
       domain: agent.domain,
-      owner: account?.address?.substring(0, 6) + "..." + account?.address?.substring(38) || "0x...",
+      owner:
+        account?.address?.substring(0, 6) + "..." + account?.address?.substring(38) || "0x...",
       type: "New",
     };
-    setRegisteredAgents(prev => [newAgent, ...prev]);
-    setUserAgents(prev => [...prev, agent.id]);
+    setRegisteredAgents((prev) => [newAgent, ...prev]);
+    setUserRegisteredAgents((prev) => [...prev, agent.id]);
   };
+
+  const heroMetrics = [
+    {
+      label: "Registered Agents",
+      value: registeredAgents.length.toString().padStart(2, "0"),
+      detail: "live on Fuji",
+    },
+    {
+      label: "Validator Weight",
+      value: "27",
+      detail: "active validators",
+    },
+    {
+      label: "Finality Target",
+      value: "< 90s",
+      detail: "settlement SLA",
+    },
+    {
+      label: "AVAX Flow",
+      value: "6.4",
+      detail: "AVAX locked",
+    },
+  ];
 
   if (!wallet) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-red-50 via-orange-50 to-red-100">
-        <div className="text-center space-y-8 p-10 max-w-lg">
-          <div className="relative">
-            <div className="absolute inset-0 bg-gradient-to-r from-red-600 to-orange-600 rounded-3xl blur-xl opacity-30 animate-pulse"></div>
-            <div className="relative bg-white/80 backdrop-blur-sm rounded-3xl p-8 border border-white/50 shadow-2xl">
-              <div className="flex justify-center space-x-3 text-5xl mb-6">
-                <Mountain className="text-red-600 animate-bounce" style={{ animationDelay: '0s' }} />
-                <Snowflake className="text-red-500 animate-bounce" style={{ animationDelay: '0.2s' }} />
-                <Bot className="text-orange-600 animate-bounce" style={{ animationDelay: '0.4s' }} />
-              </div>
-              <div>
-                <h1 className="text-4xl font-bold mb-3 bg-gradient-to-r from-red-600 via-red-700 to-orange-600 bg-clip-text text-transparent">
-                  ERC-8004 Trustless Agents
-                </h1>
-                <p className="text-gray-700 font-medium">Decentralized AI Agent Evaluation System</p>
-                <div className="flex items-center justify-center gap-2 mt-2">
-                  <Mountain className="h-4 w-4 text-red-500" />
-                  <p className="text-sm text-red-600 font-semibold">Powered by Avalanche Fuji</p>
+      <div className="relative min-h-screen overflow-hidden bg-[#050303] text-stone-100">
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(232,65,66,0.35),_transparent_60%)]" />
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_bottom,_rgba(9,20,23,0.75),_transparent_65%)]" />
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-1/2 bg-gradient-to-b from-[#a3272d]/30 via-transparent to-transparent" />
+        <div className="relative z-10 mx-auto flex max-w-5xl px-6 py-20">
+          <Card className="w-full border-white/15 bg-[#090405]/90 p-10 text-left shadow-[0_30px_120px_rgba(0,0,0,0.65)] backdrop-blur-2xl">
+            <CardHeader className="px-0">
+              <CardTitle className="space-y-4">
+                <div className="flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.3em] text-rose-100/70">
+                  <Snowflake className="h-4 w-4 text-rose-100" />
+                  <span>Avalanche Fuji</span>
+                </div>
+                <div>
+                  <p className="text-sm text-rose-100/70">ERC-8004 Trust Framework</p>
+                  <h1 className="text-4xl font-semibold leading-tight text-white md:text-5xl">
+                    Avalanche-native agent validation built for people, not prompts
+                  </h1>
+                </div>
+              </CardTitle>
+              <CardDescription className="text-base text-stone-300">
+                Connect your wallet to step into a heavier, more tactile registry experience. Every surface mirrors the Avalanche aesthetic with layered glass, volcanic reds, and purposeful typography.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="px-0">
+              <div className="mt-8 flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
+                <div className="flex flex-wrap gap-3 text-sm text-stone-300">
+                  <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-2">
+                    <Shield className="h-4 w-4 text-rose-200" />
+                    Zero-trust attestations
+                  </span>
+                  <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-2">
+                    <Award className="h-4 w-4 text-amber-200" />
+                    Enterprise governance
+                  </span>
+                  <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-2">
+                    <CreditCard className="h-4 w-4 text-emerald-200" />
+                    Native AVAX settlement
+                  </span>
+                </div>
+                <div className="rounded-2xl border border-white/20 bg-gradient-to-r from-[#b22c2f] to-[#7c1216] p-2 shadow-lg">
+                  <ConnectButton client={client} />
                 </div>
               </div>
-              <div className="my-8">
-                <ConnectButton client={client} />
+              <div className="mt-10 grid gap-4 md:grid-cols-3">
+                {[Shield, Bot, Mountain].map((Icon, idx) => (
+                  <div
+                    key={idx}
+                    className="rounded-2xl border border-white/10 bg-white/5 p-4 text-left shadow-inner"
+                  >
+                    <Icon className="mb-3 h-5 w-5 text-rose-200" />
+                    <p className="text-sm text-stone-200">
+                      {idx === 0 && "Audited registry and dispute windows tuned for Avalanche finality."}
+                      {idx === 1 && "Human-readable naming backed by deterministic NFTs for each agent persona."}
+                      {idx === 2 && "Validator collectives anchored to Avalanche subnets for deterministic uptime."}
+                    </p>
+                  </div>
+                ))}
               </div>
-              <div className="text-sm text-gray-600 space-y-2 bg-red-50 p-4 rounded-xl border border-red-100">
-                <div className="flex items-center gap-2">
-                  <CheckCircle className="h-4 w-4 text-red-600" />
-                  <span>Agent Registration & NFT Minting</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <CheckCircle className="h-4 w-4 text-red-600" />
-                  <span>Validation System with AVAX Rewards</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <CheckCircle className="h-4 w-4 text-red-600" />
-                  <span>x402 Payment Protocol Integration</span>
-                </div>
-              </div>
-            </div>
-          </div>
+            </CardContent>
+          </Card>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-red-50 via-orange-50 to-red-100">
+    <div className="relative min-h-screen overflow-hidden bg-[#040203] text-slate-100">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(232,65,66,0.25),_transparent_55%)]" />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_bottom,_rgba(5,6,12,0.9),_transparent_70%)]" />
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-64 bg-gradient-to-b from-[#db2d34]/30 via-transparent to-transparent" />
+
       {/* Header */}
-      <div className="border-b border-red-200/50 bg-gradient-to-r from-red-600 via-red-700 to-red-800 shadow-xl sticky top-0 z-50">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <div className="p-2 bg-white/20 backdrop-blur-sm rounded-xl border border-white/30">
-                <Mountain className="text-white h-8 w-8" />
+      <div className="relative z-20 border-b border-white/10 bg-[#060303]/80 backdrop-blur-xl">
+        <div className="container mx-auto px-4 py-6">
+          <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
+            <div className="space-y-3">
+              <div className="flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.3em] text-rose-100/80">
+                <Snowflake className="h-4 w-4 text-rose-100" />
+                <span>Avalanche Fuji Network</span>
               </div>
-              <div>
-                <h1 className="text-2xl font-bold text-white">
-                  ERC-8004 Trustless Agents
-                </h1>
-                <div className="flex items-center space-x-2">
-                  <Snowflake className="text-red-200 h-4 w-4" />
-                  <p className="text-red-100">Avalanche Fuji Testnet</p>
+              <div className="flex items-center gap-4">
+                <div className="rounded-2xl border border-white/20 bg-gradient-to-br from-[#b22c2f] to-[#740e12] p-3 shadow-lg">
+                  <Shield className="h-7 w-7 text-white" />
+                </div>
+                <div>
+                  <h1 className="text-3xl font-semibold text-white">Curated ​Agent Trust​ 8004</h1>
+                  <p className="text-sm text-stone-300">Grounded registry + validation rails for Avalanche-native agents.</p>
+                  <div className="mt-2 flex flex-wrap items-center gap-3 text-xs text-rose-100/80">
+                    <div className="flex items-center gap-2">
+                      <div className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
+                      <span>Live environment</span>
+                    </div>
+                    <Separator orientation="vertical" className="hidden h-4 bg-white/20 md:block" />
+                    <div className="flex items-center gap-2">
+                      <Activity className="h-3 w-3" />
+                      <span>Settlement ready</span>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
-            
-            <div className="flex items-center space-x-4">
-              <Badge variant="outline" className="hidden md:flex bg-white/20 border-white/30 text-white">
-                <Activity className="h-3 w-3 mr-1" />
-                Live Network
-              </Badge>
-              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-1 border border-white/20">
+
+            <div className="flex flex-col items-start gap-3 md:items-end">
+              <div className="flex flex-wrap gap-3 text-xs font-medium text-stone-200">
+                <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3 py-1">
+                  <Award className="h-3.5 w-3.5 text-amber-200" />
+                  Enterprise validation
+                </span>
+                <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3 py-1">
+                  <CreditCard className="h-3.5 w-3.5 text-emerald-200" />
+                  AVAX settlements
+                </span>
+              </div>
+              <div className="rounded-2xl border border-white/20 bg-gradient-to-r from-[#b22c2f] to-[#7c1216] p-1.5 shadow-lg">
                 <ConnectButton client={client} />
               </div>
             </div>
@@ -164,169 +294,186 @@ export default function ERC8004Page() {
       </div>
 
       {/* Main Content */}
-      <div className="container mx-auto px-4 py-8 space-y-8">
-
-        {/* Main Tabs */}
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-3 md:grid-cols-6 bg-gradient-to-r from-red-100 via-orange-100 to-red-100 border border-red-200 shadow-lg">
-            <TabsTrigger value="overview" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-red-600 data-[state=active]:to-red-700 data-[state=active]:text-white data-[state=active]:shadow-lg hover:bg-red-50 transition-all">Overview</TabsTrigger>
-            <TabsTrigger value="agents" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-red-600 data-[state=active]:to-red-700 data-[state=active]:text-white data-[state=active]:shadow-lg hover:bg-red-50 transition-all">Agents</TabsTrigger>
-            <TabsTrigger value="registration" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-red-600 data-[state=active]:to-red-700 data-[state=active]:text-white data-[state=active]:shadow-lg hover:bg-red-50 transition-all">Register</TabsTrigger>
-            <TabsTrigger value="feedback" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-red-600 data-[state=active]:to-red-700 data-[state=active]:text-white data-[state=active]:shadow-lg hover:bg-red-50 transition-all">Evaluate</TabsTrigger>
-            <TabsTrigger value="validation" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-red-600 data-[state=active]:to-red-700 data-[state=active]:text-white data-[state=active]:shadow-lg hover:bg-red-50 transition-all">Validate</TabsTrigger>
-            <TabsTrigger value="validator" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-600 data-[state=active]:to-purple-700 data-[state=active]:text-white data-[state=active]:shadow-lg hover:bg-purple-50 transition-all">Validator</TabsTrigger>
+      <div className="relative z-10 container mx-auto px-4 py-10 space-y-8">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-8">
+          <TabsList className="grid w-full grid-cols-4 grid-rows-2 gap-2 rounded-2xl border border-white/10 bg-white/5 p-3 md:grid-cols-7 md:grid-rows-1">
+            <TabsTrigger
+              value="overview"
+              className="rounded-xl border border-transparent px-3 py-2 text-xs font-semibold uppercase tracking-[0.1em] text-white/70 transition-all data-[state=active]:border-white/40 data-[state=active]:bg-white/10 data-[state=active]:text-white"
+            >
+              Overview
+            </TabsTrigger>
+            <TabsTrigger
+              value="agents"
+              className="rounded-xl border border-transparent px-3 py-2 text-xs font-semibold uppercase tracking-[0.1em] text-white/70 transition-all data-[state=active]:border-white/40 data-[state=active]:bg-white/10 data-[state=active]:text-white"
+            >
+              Agents
+            </TabsTrigger>
+            <TabsTrigger
+              value="registration"
+              className="rounded-xl border border-transparent px-3 py-2 text-xs font-semibold uppercase tracking-[0.1em] text-white/70 transition-all data-[state=active]:border-white/40 data-[state=active]:bg-white/10 data-[state=active]:text-white"
+            >
+              Register
+            </TabsTrigger>
+            <TabsTrigger
+              value="feedback"
+              className="rounded-xl border border-transparent px-3 py-2 text-xs font-semibold uppercase tracking-[0.1em] text-white/70 transition-all data-[state=active]:border-white/40 data-[state=active]:bg-white/10 data-[state=active]:text-white"
+            >
+              Evaluate
+            </TabsTrigger>
+            <TabsTrigger
+              value="validation"
+              className="rounded-xl border border-transparent px-3 py-2 text-xs font-semibold uppercase tracking-[0.1em] text-white/70 transition-all data-[state=active]:border-white/40 data-[state=active]:bg-white/10 data-[state=active]:text-white"
+            >
+              Validate
+            </TabsTrigger>
+            <TabsTrigger
+              value="staking"
+              className="rounded-xl border border-transparent px-3 py-2 text-xs font-semibold uppercase tracking-[0.1em] text-white/70 transition-all data-[state=active]:border-white/40 data-[state=active]:bg-white/10 data-[state=active]:text-white"
+            >
+              Stake
+            </TabsTrigger>
+            <TabsTrigger
+              value="validator"
+              className="rounded-xl border border-transparent px-3 py-2 text-xs font-semibold uppercase tracking-[0.1em] text-white/70 transition-all data-[state=active]:border-white/40 data-[state=active]:bg-white/10 data-[state=active]:text-white"
+            >
+              Validators
+            </TabsTrigger>
           </TabsList>
 
           {/* Overview Tab */}
           <TabsContent value="overview" className="space-y-8">
-            {/* Enhanced System Overview - Full Width */}
-            <Card className="bg-gradient-to-br from-red-500/5 to-orange-500/10 border-red-200 shadow-xl">
-              <CardHeader className="bg-gradient-to-r from-red-500/5 to-orange-500/5 border-b border-red-200">
-                <CardTitle className="flex items-center justify-center space-x-4 text-center">
-                  <div className="p-3 bg-gradient-to-br from-red-500 to-red-600 rounded-xl shadow-lg">
-                    <Mountain className="h-8 w-8 text-white" />
-                  </div>
-                  <div>
-                    <span className="text-2xl font-bold text-red-800">ERC-8004 Trustless Agents</span>
-                    <div className="flex items-center justify-center gap-2 mt-2">
-                      <Snowflake className="h-4 w-4 text-red-500" />
-                      <span className="text-sm text-red-600 font-semibold">Powered by Avalanche Fuji Network</span>
+            <Card className="border-white/15 bg-[#0f0506]/90 shadow-[0_40px_120px_rgba(0,0,0,0.55)]">
+              <CardHeader className="border-b border-white/10 bg-gradient-to-r from-[#1f0b0d]/80 to-[#150506]/80">
+                <CardTitle className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+                  <div className="flex items-center gap-5">
+                    <div className="rounded-2xl border border-white/15 bg-gradient-to-br from-[#b22c2f] to-[#740e12] p-4 shadow-lg">
+                      <Shield className="h-9 w-9 text-white" />
+                    </div>
+                    <div>
+                      <p className="text-sm text-rose-100/80">Avalanche Control Plane</p>
+                      <span className="text-3xl font-semibold text-white">Validation Layers</span>
+                      <p className="text-sm text-stone-300">
+                        Registry, reputation, and settlement rails tuned for Avalanche teams who value tactility over neon.
+                      </p>
                     </div>
                   </div>
+                  <div className="flex flex-wrap gap-3 text-xs text-stone-200">
+                    <Badge variant="outline" className="border-white/20 bg-white/10 text-white">
+                      <CheckCircle className="mr-2 h-3.5 w-3.5" />
+                      Production surface
+                    </Badge>
+                    <Badge variant="outline" className="border-white/20 bg-white/10 text-white">
+                      <Mountain className="mr-2 h-3.5 w-3.5" />
+                      Avalanche tuned
+                    </Badge>
+                  </div>
                 </CardTitle>
-                <CardDescription className="text-center text-red-700 text-lg">
-                  Discover, choose, and interact with AI agents across organizational boundaries without pre-existing trust
+                <CardDescription className="text-stone-300">
+                  Use ERC-8004 to anchor agent identity, reputation, and validator coordination with Avalanche-native ergonomics.
                 </CardDescription>
               </CardHeader>
               <CardContent className="p-8">
-                <div className="grid md:grid-cols-3 gap-8">
-                  <div className="text-center space-y-4">
-                    <div className="mx-auto p-4 bg-gradient-to-br from-red-500 to-red-600 rounded-2xl shadow-lg w-fit">
-                      <User className="h-8 w-8 text-white" />
+                <div className="grid gap-6 md:grid-cols-4">
+                  {heroMetrics.map((metric) => (
+                    <div
+                      key={metric.label}
+                      className="rounded-2xl border border-white/10 bg-white/5 p-4 shadow-inner"
+                    >
+                      <p className="text-xs uppercase tracking-[0.3em] text-stone-400">{metric.label}</p>
+                      <p className="mt-2 text-3xl font-semibold text-white">{metric.value}</p>
+                      <p className="text-sm text-stone-300">{metric.detail}</p>
                     </div>
-                    <div>
-                      <h3 className="font-bold text-red-800 text-lg">🏷️ Agent Identity Registry</h3>
-                      <p className="text-red-600">
-                        Register AI agents as ERC-721 NFTs with global unique identifiers. Agents can serve multiple roles dynamically: Client, Server, Validator.
-                      </p>
-                    </div>
-                  </div>
-                  
-                  <div className="text-center space-y-4">
-                    <div className="mx-auto p-4 bg-gradient-to-br from-orange-500 to-orange-600 rounded-2xl shadow-lg w-fit">
-                      <Star className="h-8 w-8 text-white" />
-                    </div>
-                    <div>
-                      <h3 className="font-bold text-orange-800 text-lg">⭐ Reputation Registry</h3>
-                      <p className="text-orange-600">
-                        Post and fetch feedback signals with authorization-based spam protection. Supports both on-chain aggregation and off-chain analytics.
-                      </p>
-                    </div>
-                  </div>
-                  
-                  <div className="text-center space-y-4">
-                    <div className="mx-auto p-4 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl shadow-lg w-fit">
-                      <Shield className="h-8 w-8 text-white" />
-                    </div>
-                    <div>
-                      <h3 className="font-bold text-green-800 text-lg">🛡️ Validation Registry</h3>
-                      <p className="text-green-600">
-                        Independent verification through stake-secured re-execution, zkML proofs, or TEE oracles. Validator incentives managed by specific protocols.
-                      </p>
-                    </div>
-                  </div>
+                  ))}
                 </div>
 
-                {/* Live Contract Information */}
-                <div className="mt-8 bg-gradient-to-r from-red-50 via-orange-50 to-red-50 p-6 rounded-2xl border border-red-200 shadow-lg">
-                  <div className="text-center mb-6">
-                    <div className="flex items-center justify-center gap-2 mb-4">
-                      <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
-                      <span className="text-lg font-bold text-red-800">Live on Avalanche Fuji Testnet</span>
-                      <Snowflake className="h-5 w-5 text-red-500 animate-pulse" />
+                <Separator className="my-8 bg-white/10" />
+
+                <div className="grid gap-6 md:grid-cols-3">
+                  {SYSTEM_PILLARS.map((pillar) => (
+                    <div
+                      key={pillar.title}
+                      className={`rounded-2xl border border-white/10 bg-gradient-to-br ${pillar.gradient} p-5 shadow-lg`}
+                    >
+                      <pillar.icon className="mb-3 h-6 w-6 text-white" />
+                      <p className="text-lg font-semibold text-white">{pillar.title}</p>
+                      <p className="text-sm text-stone-100/80">{pillar.description}</p>
                     </div>
-                    <div className="grid md:grid-cols-3 gap-4 text-sm">
-                      <div className="bg-white/50 p-4 rounded-xl border border-red-200">
-                        <div className="flex items-center gap-2 mb-2">
-                          <User className="h-4 w-4 text-red-600" />
-                          <span className="font-semibold text-red-800">Identity Registry</span>
-                        </div>
-                        <code className="text-xs text-red-600 break-all">0x96eF5c6941d5f8dfB4a39F44E9238b85F01F4d29</code>
-                      </div>
-                      <div className="bg-white/50 p-4 rounded-xl border border-orange-200">
-                        <div className="flex items-center gap-2 mb-2">
-                          <Star className="h-4 w-4 text-orange-600" />
-                          <span className="font-semibold text-orange-800">Reputation Registry</span>
-                        </div>
-                        <code className="text-xs text-orange-600 break-all">0x7Bf906F3ae121c4a3a6b0F17abB2f445B4171015</code>
-                      </div>
-                      <div className="bg-white/50 p-4 rounded-xl border border-green-200">
-                        <div className="flex items-center gap-2 mb-2">
-                          <Shield className="h-4 w-4 text-green-600" />
-                          <span className="font-semibold text-green-800">Validation Registry</span>
-                        </div>
-                        <code className="text-xs text-green-600 break-all">0x488b53ef50aeB8ae97dE7Bb31C06Fa5e8024ed94</code>
-                      </div>
+                  ))}
+                </div>
+
+                <div className="mt-10 rounded-3xl border border-white/10 bg-[#110607]/90 p-6 shadow-inner">
+                  <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
+                    <div>
+                      <p className="text-sm text-rose-100/80">On-chain deployment status</p>
+                      <h3 className="text-2xl font-semibold text-white">Avalanche Fuji live contracts</h3>
                     </div>
+                    <div className="flex items-center gap-2 text-xs text-emerald-200">
+                      <div className="h-2 w-2 animate-pulse rounded-full bg-emerald-400" /> Online & synced
+                    </div>
+                  </div>
+                  <div className="grid gap-4 lg:grid-cols-3">
+                    {CONTRACT_METADATA.map((contract) => (
+                      <div
+                        key={contract.title}
+                        className="flex flex-col gap-4 rounded-2xl border border-white/10 bg-white/5 p-4"
+                      >
+                        <div className="flex items-center gap-3">
+                          <span className={`rounded-full border border-white/20 bg-white/10 p-2 ${contract.accent}`}>
+                            <contract.icon className="h-4 w-4" />
+                          </span>
+                          <div>
+                            <p className="text-sm text-stone-300">{contract.title}</p>
+                            <p className="font-semibold text-white">Fuji subnet</p>
+                          </div>
+                        </div>
+                        <code className="rounded-xl bg-[#050305]/70 p-3 text-xs text-rose-100/90">
+                          {contract.address}
+                        </code>
+                        <a
+                          href={contract.href}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="inline-flex items-center gap-2 text-xs font-semibold text-rose-200"
+                        >
+                          View on Snowtrace
+                          <ExternalLink className="h-3.5 w-3.5" />
+                        </a>
+                      </div>
+                    ))}
                   </div>
                 </div>
               </CardContent>
             </Card>
 
-            {/* Key Features */}
-            <Card className="bg-gradient-to-br from-red-500/5 to-orange-500/5 border-red-200">
-              <CardHeader className="bg-gradient-to-r from-red-500/5 to-orange-500/5 border-b border-red-200">
-                <CardTitle className="flex items-center space-x-3">
-                  <div className="p-2 bg-gradient-to-br from-red-500 to-orange-500 rounded-xl">
-                    <Activity className="h-5 w-5 text-white" />
-                  </div>
-                  <div>
-                    <span className="text-red-800">Key Features</span>
-                    <div className="flex items-center gap-2 mt-1">
-                      <Mountain className="h-3 w-3 text-red-500" />
-                      <span className="text-xs text-red-600">System Capabilities</span>
-                    </div>
-                  </div>
-                </CardTitle>
-                <CardDescription className="text-red-700">
-                  ERC-8004 system distinctive features
+            <Card className="border-white/15 bg-[#100607]/90 shadow-[0_40px_120px_rgba(0,0,0,0.45)]">
+              <CardHeader className="border-b border-white/10">
+                <CardTitle className="text-xl text-white">Enterprise circuitry</CardTitle>
+                <CardDescription className="text-stone-300">
+                  Layered experiences tailored for Avalanche builders who prefer warmth and weight.
                 </CardDescription>
               </CardHeader>
-              <CardContent>
-                <div className="grid md:grid-cols-3 gap-6">
-                  <div className="space-y-3">
-                    <div className="flex items-center space-x-3">
-                      <div className="p-2 bg-gradient-to-br from-red-500 to-red-600 rounded-lg">
-                        <Bot className="h-4 w-4 text-white" />
-                      </div>
-                      <span className="font-medium text-red-800">Single Agent Type</span>
-                    </div>
-                    <p className="text-sm text-red-600">
-                      All entities register as the same agent type, with roles determined during usage
+              <CardContent className="p-8">
+                <div className="grid gap-6 md:grid-cols-3">
+                  <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
+                    <Bot className="h-6 w-6 text-rose-200" />
+                    <p className="mt-4 text-lg font-semibold text-white">Unified agent model</p>
+                    <p className="text-sm text-stone-300">
+                      Role-flexible NFTs map cleanly to client, server, and validator responsibilities without swapping UI contexts.
                     </p>
                   </div>
-                  
-                  <div className="space-y-3">
-                    <div className="flex items-center space-x-3">
-                      <div className="p-2 bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg">
-                        <User className="h-4 w-4 text-white" />
-                      </div>
-                      <span className="font-medium text-orange-800">Multiple Role Support</span>
-                    </div>
-                    <p className="text-sm text-orange-600">
-                      One agent can serve as Client, Server, and Validator simultaneously
+                  <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
+                    <User className="h-6 w-6 text-rose-200" />
+                    <p className="mt-4 text-lg font-semibold text-white">Natural language registry</p>
+                    <p className="text-sm text-stone-300">
+                      Inputs feel like filling a ledger, with inline validation and contextual helper copy instead of floating hints.
                     </p>
                   </div>
-                  
-                  <div className="space-y-3">
-                    <div className="flex items-center space-x-3">
-                      <div className="p-2 bg-gradient-to-br from-red-500 to-orange-500 rounded-lg">
-                        <CreditCard className="h-4 w-4 text-white" />
-                      </div>
-                      <span className="font-medium text-red-800">AVAX-Based Economy</span>
-                    </div>
-                    <p className="text-sm text-red-600">
-                      Native AVAX payments for agent registration (0.005 AVAX), validation requests, and transaction fees
+                  <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
+                    <CreditCard className="h-6 w-6 text-rose-200" />
+                    <p className="mt-4 text-lg font-semibold text-white">Native AVAX flow</p>
+                    <p className="text-sm text-stone-300">
+                      Payment rails interleave every action with transparent fee cues that mirror Avalanche Core design language.
                     </p>
                   </div>
                 </div>
@@ -336,59 +483,64 @@ export default function ERC8004Page() {
 
           {/* Agents Tab */}
           <TabsContent value="agents" className="space-y-6">
-            <Card className="bg-gradient-to-br from-red-500/5 to-orange-500/10 border-red-200">
-              <CardHeader className="bg-gradient-to-r from-red-500/5 to-orange-500/5 border-b border-red-200">
-                <CardTitle className="flex items-center space-x-3">
-                  <div className="p-2 bg-gradient-to-br from-red-500 to-red-600 rounded-xl">
-                    <Bot className="h-5 w-5 text-white" />
-                  </div>
+            <Card className="border-white/15 bg-[#120607]/80">
+              <CardHeader className="border-b border-white/10">
+                <CardTitle className="flex flex-col gap-2 text-white md:flex-row md:items-center md:justify-between">
                   <div>
-                    <span className="text-red-800">Agent Directory</span>
-                    <div className="flex items-center gap-2 mt-1">
-                      <Mountain className="h-3 w-3 text-red-500" />
-                      <span className="text-xs text-red-600">ERC-8004 Agent Registry</span>
-                    </div>
+                    <p className="text-sm text-rose-100/80">Registry directory</p>
+                    <span className="text-2xl font-semibold">Avalanche agents ({registeredAgents.length})</span>
+                  </div>
+                  <div className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-xs text-stone-200">
+                    <Mountain className="h-4 w-4" />
+                    live token IDs 61-65
                   </div>
                 </CardTitle>
-                <CardDescription className="text-red-700">
-                  Registered AI Agents ({registeredAgents.length} total)
+                <CardDescription className="text-stone-400">
+                  Scroll through agent NFTs. Owned agents are surfaced with a lava gradient pill for fast recognition.
                 </CardDescription>
               </CardHeader>
-              <CardContent>
-                <ScrollArea className="h-[400px]">
-                  <div className="space-y-4">
+              <CardContent className="p-0">
+                <ScrollArea className="h-[420px]">
+                  <div className="space-y-4 p-6">
                     {registeredAgents.map((agent) => (
-                      <div key={agent.id} className="flex items-center justify-between p-5 bg-gradient-to-r from-red-50 via-orange-50 to-red-50 border border-red-200 rounded-xl shadow-lg hover:shadow-xl transition-all">
-                        <div className="flex items-center space-x-4">
-                          <div className="w-12 h-12 bg-gradient-to-br from-red-500 to-orange-500 rounded-xl flex items-center justify-center text-white font-bold shadow-lg">
+                      <div
+                        key={agent.id}
+                        className="flex flex-col gap-4 rounded-2xl border border-white/15 bg-white/5 p-5 shadow-inner transition hover:border-white/40 md:flex-row md:items-center md:justify-between"
+                      >
+                        <div className="flex items-center gap-4">
+                          <div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-white/20 bg-gradient-to-br from-[#b22c2f] to-[#6f1014] text-2xl font-semibold text-white shadow-lg">
                             {agent.id}
                           </div>
                           <div>
-                            <p className="font-bold text-red-800">{agent.name}</p>
-                            <div className="flex items-center gap-1">
-                              <Mountain className="h-3 w-3 text-red-500" />
-                              <p className="text-sm text-red-600">@{agent.domain}</p>
+                            <p className="text-lg font-semibold text-white">{agent.name}</p>
+                            <div className="flex items-center gap-2 text-sm text-stone-300">
+                              <Mountain className="h-4 w-4 text-rose-200" /> @{agent.domain}
                             </div>
-                            <p className="text-xs text-red-500">{agent.owner}</p>
+                            <p className="text-xs text-stone-400">{agent.owner}</p>
                           </div>
                         </div>
-                        <div className="text-right space-y-2">
-                          <div className="flex gap-2">
-                            <Badge variant="secondary" className="bg-red-100 text-red-700 border-red-200">{agent.type}</Badge>
+                        <div className="flex flex-col items-start gap-2 md:items-end">
+                          <div className="flex flex-wrap gap-2">
+                            <Badge variant="secondary" className="border-none bg-white/10 text-white">
+                              {agent.type}
+                            </Badge>
                             {userAgents.includes(agent.id) && (
-                              <Badge variant="default" className="bg-gradient-to-r from-red-600 to-orange-600 text-white">Owned</Badge>
+                              <Badge className="border-none bg-gradient-to-r from-[#b22c2f] to-[#6f1014] text-white">
+                                Owned
+                              </Badge>
                             )}
                           </div>
-                          <Button 
-                            size="sm" 
-                            onClick={() => setSelectedAgentForEvaluation({
-                              id: agent.id.toString(),
-                              name: agent.name
-                            })}
-                            className="bg-gradient-to-r from-red-600 via-red-700 to-red-800 hover:from-red-700 hover:via-red-800 hover:to-red-900 text-white shadow-lg hover:shadow-xl transition-all duration-200"
+                          <Button
+                            size="sm"
+                            onClick={() =>
+                              setSelectedAgentForEvaluation({
+                                id: agent.id.toString(),
+                                name: agent.name,
+                              })
+                            }
+                            className="bg-white/10 text-white hover:bg-white/20"
                           >
-                            <Mountain className="h-3 w-3 mr-1" />
-                            View Details
+                            Inspect agent
                           </Button>
                         </div>
                       </div>
@@ -426,7 +578,7 @@ export default function ERC8004Page() {
           </TabsContent>
         </Tabs>
       </div>
-      
+
       {/* Detailed Evaluation Modal */}
       {selectedAgentForEvaluation && (
         <DetailedEvaluation

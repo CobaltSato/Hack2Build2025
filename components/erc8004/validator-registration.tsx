@@ -531,7 +531,7 @@ export function ValidatorRegistration() {
   return (
     <div className="space-y-6">
       {/* Tab Navigation */}
-      <Card className="bg-gradient-to-r from-purple-50 via-purple-100 to-purple-50 border-purple-200">
+      <Card className="erc-panel">
         <CardContent className="p-4">
           <div className="flex space-x-1">
             <Button
@@ -565,7 +565,7 @@ export function ValidatorRegistration() {
       {/* Validator Staking Tab */}
       {activeTab === "staking" && (
       <Card>
-        <CardHeader className="bg-gradient-to-r from-purple-500/5 to-indigo-500/5 border-b border-purple-200">
+        <CardHeader className="erc-panel-header">
           <CardTitle className="flex items-center space-x-3">
             <div className="p-2 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl">
               <Shield className="h-6 w-6 text-white" />
@@ -578,14 +578,14 @@ export function ValidatorRegistration() {
               </div>
             </div>
           </CardTitle>
-          <CardDescription className="text-purple-700">
+          <CardDescription className="erc-panel-description">
             Stake AVAX to become a validator and earn rewards for verifying agent data
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6 p-6">
           {/* Real Agent Lookup Section */}
-          <Card className="bg-gradient-to-br from-blue-500/5 to-blue-600/10 border-blue-200">
-            <CardHeader className="bg-gradient-to-r from-blue-500/5 to-blue-600/5 border-b border-blue-200">
+          <Card className="erc-panel">
+            <CardHeader className="erc-panel-header">
               <CardTitle className="flex items-center space-x-3">
                 <div className="p-2 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl">
                   <Search className="h-5 w-5 text-white" />
@@ -598,7 +598,7 @@ export function ValidatorRegistration() {
                   </div>
                 </div>
               </CardTitle>
-              <CardDescription className="text-blue-700">
+              <CardDescription className="erc-panel-description">
                 Search for your registered agent by Token ID to register as validator
               </CardDescription>
             </CardHeader>
@@ -837,7 +837,7 @@ export function ValidatorRegistration() {
       {/* Validation Response Tab */}
       {activeTab === "response" && (
       <Card>
-        <CardHeader className="bg-gradient-to-r from-emerald-500/5 to-green-500/5 border-b border-emerald-200">
+        <CardHeader className="erc-panel-header">
           <CardTitle className="flex items-center space-x-3">
             <div className="p-2 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-xl">
               <MessageSquare className="h-6 w-6 text-white" />
@@ -850,7 +850,7 @@ export function ValidatorRegistration() {
               </div>
             </div>
           </CardTitle>
-          <CardDescription className="text-emerald-700">
+          <CardDescription className="erc-panel-description">
             Review and respond to validation requests with your expert assessment
           </CardDescription>
         </CardHeader>
@@ -1040,7 +1040,7 @@ export function ValidatorRegistration() {
       )}
 
       {/* Requirements Info */}
-      <Card className="bg-gradient-to-r from-purple-50 via-indigo-50 to-purple-50 border-purple-200 shadow-lg">
+      <Card className="erc-panel">
         <CardContent className="p-5">
           <div className="flex items-center space-x-4">
             <div className="p-3 bg-gradient-to-br from-purple-500 to-indigo-500 rounded-xl">
@@ -1087,7 +1087,7 @@ export function ValidatorRegistration() {
       </Card>
 
       {/* Benefits Info */}
-      <Card className="bg-gradient-to-r from-indigo-50 via-purple-50 to-indigo-50 border-indigo-200 shadow-lg">
+      <Card className="erc-panel">
         <CardContent className="p-5">
           <div className="flex items-center space-x-4">
             <div className="p-3 bg-gradient-to-br from-indigo-500 to-purple-500 rounded-xl">

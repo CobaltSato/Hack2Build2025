@@ -3,7 +3,7 @@ import { ThirdwebProvider } from "thirdweb/react";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Trustless Agents",
+  title: "Curated ​Agent Trust​ 8004",
   description: "ERC-8004 Trustless Agent Protocol with on-chain evaluation system",
 };
 

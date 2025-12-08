@@ -724,7 +724,7 @@ export function DetailedEvaluation({ agentId, agentName, onClose }: DetailedEval
             <div className="space-y-6 pb-6">
             {/* Contract Information Section */}
             {contractData && (
-              <Card className="bg-gradient-to-r from-green-50 to-blue-50">
+              <Card className="erc-panel">
                 <CardHeader>
                   <CardTitle className="flex items-center space-x-2">
                     <Shield className="h-5 w-5 text-green-600" />

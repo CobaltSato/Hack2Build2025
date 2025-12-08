@@ -528,7 +528,7 @@ export function ValidationRequest() {
     <div className="space-y-6">
       {/* Validation Request Form */}
       <Card>
-        <CardHeader className="bg-gradient-to-r from-green-500/5 to-emerald-500/5 border-b border-green-200">
+        <CardHeader className="erc-panel-header">
           <CardTitle className="flex items-center space-x-3">
             <div className="p-2 bg-gradient-to-br from-green-500 to-green-600 rounded-xl">
               <FileSearch className="h-6 w-6 text-white" />
@@ -541,14 +541,14 @@ export function ValidationRequest() {
               </div>
             </div>
           </CardTitle>
-          <CardDescription className="text-green-700">
+          <CardDescription className="erc-panel-description">
             Submit data for validation by expert validators and earn quality assurance
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6 p-6">
           {/* Agent Lookup Section */}
-          <Card className="bg-gradient-to-br from-blue-500/5 to-blue-600/10 border-blue-200">
-            <CardHeader className="bg-gradient-to-r from-blue-500/5 to-blue-600/5 border-b border-blue-200">
+          <Card className="erc-panel">
+            <CardHeader className="erc-panel-header">
               <CardTitle className="flex items-center space-x-3">
                 <div className="p-2 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl">
                   <Search className="h-5 w-5 text-white" />
@@ -884,7 +884,7 @@ export function ValidationRequest() {
       </Card>
 
       {/* Validation Process Info */}
-      <Card className="bg-gradient-to-r from-green-50 via-emerald-50 to-green-50 border-green-200 shadow-lg">
+      <Card className="erc-panel">
         <CardContent className="p-5">
           <div className="flex items-center space-x-4">
             <div className="p-3 bg-gradient-to-br from-green-500 to-emerald-500 rounded-xl">
@@ -918,7 +918,7 @@ export function ValidationRequest() {
       </Card>
 
       {/* Data Privacy Info */}
-      <Card className="bg-gradient-to-r from-blue-50 via-indigo-50 to-blue-50 border-blue-200 shadow-lg">
+      <Card className="erc-panel">
         <CardContent className="p-5">
           <div className="flex items-center space-x-4">
             <div className="p-3 bg-gradient-to-br from-blue-500 to-indigo-500 rounded-xl">

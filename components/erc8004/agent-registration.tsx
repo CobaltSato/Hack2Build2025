@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Bot, Plus, CheckCircle, Loader2, Mountain, Snowflake } from "lucide-react";
+import { Bot, Plus, CheckCircle, Loader2, Mountain, Snowflake, Shield } from "lucide-react";
 import { useActiveAccount, useSendTransaction } from "thirdweb/react";
 import { createThirdwebClient, getContract, prepareContractCall } from "thirdweb";
 import { avalancheFuji } from "thirdweb/chains";
@@ -35,7 +35,13 @@ export function AgentRegistration({ onAgentRegistered }: AgentRegistrationProps)
     agentName: "",
     cardURI: "",
   });
-  const [registeredAgent, setRegisteredAgent] = useState<{ id: number; name: string; domain: string; txHash: string; snowtraceUrl?: string } | null>(null);
+  const [registeredAgent, setRegisteredAgent] = useState<{
+    id: number;
+    name: string;
+    domain: string;
+    txHash: string;
+    snowtraceUrl?: string;
+  } | null>(null);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
   const validateAgentName = (name: string) => {
@@ -102,13 +108,6 @@ export function AgentRegistration({ onAgentRegistered }: AgentRegistrationProps)
     setErrors({});
 
     try {
-      console.log('Starting registration with:', {
-        agentName: formData.agentName,
-        cardURI: formData.cardURI,
-        userAddress: account.address,
-      });
-
-      // Prepare the contract call
       const transaction = prepareContractCall({
         contract: identityContract,
         method: "function newAgent(string memory domain, string memory cardURI) external payable returns (uint256)",
@@ -116,14 +115,9 @@ export function AgentRegistration({ onAgentRegistered }: AgentRegistrationProps)
         value: AGENT_REGISTRATION_FEE, // 0.005 AVAX fee
       });
 
-      // Send the transaction using user's wallet
       sendTransaction(transaction, {
         onSuccess: (result) => {
-          console.log('Transaction successful:', result);
-          
           const snowtraceUrl = `https://c.testnet.snowtrace.io/tx/${result.transactionHash}`;
-          
-          // Generate mock agent ID (in real app, you'd parse the transaction receipt for the returned token ID)
           const agentId = Date.now();
           
           const newAgent = {
@@ -131,20 +125,15 @@ export function AgentRegistration({ onAgentRegistered }: AgentRegistrationProps)
             name: formData.agentName,
             domain: formData.agentName,
             txHash: result.transactionHash,
-            snowtraceUrl: snowtraceUrl,
+            snowtraceUrl,
           };
 
           setRegisteredAgent(newAgent);
           onAgentRegistered?.(newAgent);
-          
-          // Open Snowtrace link in new tab
           window.open(snowtraceUrl, '_blank');
-
-          // Reset form
           setFormData({ agentName: "", cardURI: "" });
         },
         onError: (error) => {
-          console.error('Transaction failed:', error);
           setErrors({ 
             general: error.message || "Transaction failed. Please try again." 
           });
@@ -152,7 +141,6 @@ export function AgentRegistration({ onAgentRegistered }: AgentRegistrationProps)
       });
 
     } catch (error) {
-      console.error('Registration error:', error);
       setErrors({ 
         general: error instanceof Error ? error.message : "Registration failed. Please try again." 
       });
@@ -162,72 +150,76 @@ export function AgentRegistration({ onAgentRegistered }: AgentRegistrationProps)
   const isFormValid = formData.agentName && formData.cardURI && Object.keys(errors).length === 0 && !!account;
   const isRegistering = isSending;
 
+  const inputClasses = (hasError: boolean) =>
+    `w-full rounded-2xl border px-4 py-3 text-white placeholder:text-stone-500 bg-[#080404] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#d94548] ${
+      hasError ? "border-[#ff9c9c]" : "border-white/15"
+    }`;
+
   return (
     <div className="space-y-6">
       {/* Registration Form */}
-      <Card>
-        <CardHeader className="bg-gradient-to-r from-red-500/5 to-orange-500/5 border-b border-red-200">
-          <CardTitle className="flex items-center space-x-3">
-            <div className="p-2 bg-gradient-to-br from-red-500 to-red-600 rounded-xl">
-              <Mountain className="h-6 w-6 text-white" />
-            </div>
-            <div>
-              <span className="text-xl text-red-800">Agent Registration</span>
-              <div className="flex items-center gap-2 mt-1">
-                <Snowflake className="h-3 w-3 text-red-500" />
-                <span className="text-xs text-red-600 font-medium">Avalanche Network</span>
+      <Card className="border-white/15 bg-[#120608]/85 text-white shadow-[0_25px_90px_rgba(0,0,0,0.45)]">
+        <CardHeader className="border-b border-white/10 bg-gradient-to-r from-[#21090b] to-[#140405]">
+          <CardTitle className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+            <div className="flex items-center gap-3">
+              <div className="rounded-2xl border border-white/20 bg-gradient-to-br from-[#b22c2f] to-[#6f1014] p-3">
+                <Mountain className="h-6 w-6 text-white" />
+              </div>
+              <div>
+                <span className="text-xs uppercase tracking-[0.3em] text-rose-100/80">Avalanche registry</span>
+                <p className="text-2xl font-semibold text-white">Agent registration</p>
               </div>
             </div>
+            <Badge className="w-fit items-center gap-2 border-white/20 bg-white/10 text-white">
+              <Shield className="h-3.5 w-3.5" />
+              ERC-8004 ready
+            </Badge>
           </CardTitle>
-          <CardDescription className="text-red-700">
-            Register a new AI agent NFT in the ERC-8004 IdentityRegistry contract
+          <CardDescription className="erc-panel-description">
+            Mint an ERC-8004 NFT identity with tactile Avalanche styling. Inputs feel like ledger entries, not neon prompts.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
           {/* Registration Fee Info */}
-          <div className="bg-gradient-to-r from-red-50 via-orange-50 to-red-50 p-5 rounded-xl border border-red-200 shadow-sm">
-            <div className="flex items-center space-x-3 mb-3">
-              <div className="p-2 bg-gradient-to-br from-red-500 to-orange-500 rounded-lg">
-                <Mountain className="h-4 w-4 text-white" />
+          <div className="rounded-3xl border border-white/10 bg-[#1b090b]/80 p-5 text-stone-200">
+            <div className="flex items-center gap-3">
+              <div className="rounded-2xl bg-gradient-to-br from-[#b22c2f] to-[#6f1014] p-2">
+                <Bot className="h-5 w-5 text-white" />
               </div>
               <div>
-                <span className="font-bold text-red-800">Registration Fee: 0.005 AVAX</span>
-                <div className="flex items-center gap-1 mt-0.5">
-                  <Snowflake className="h-3 w-3 text-red-500" />
-                  <span className="text-xs text-red-600">Avalanche blockchain fee</span>
-                </div>
+                <p className="text-sm uppercase tracking-[0.3em] text-rose-200">Fee</p>
+                <p className="text-lg font-semibold text-white">0.005 AVAX</p>
               </div>
             </div>
-            <p className="text-sm text-red-700 bg-red-100 px-3 py-2 rounded-lg">
-              💎 Agent registration mints an NFT identity for Client/Server/Validator roles
+            <p className="mt-3 text-sm text-stone-300">
+              Registration mints a deterministic NFT that unlocks Client / Server / Validator roles.
+            </p>
+            <p className="mt-3 rounded-2xl bg-[#0b0405] px-4 py-3 text-xs text-rose-100/80">
+              💎 Avalanche native costs are settled instantly; keep an extra 0.002 AVAX for gas.
             </p>
           </div>
 
           {/* Form Fields */}
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium mb-2">
-                Agent Name (3-64 characters, alphanumeric only)
+              <label className="text-xs uppercase tracking-[0.4em] text-stone-400">
+                Agent name
               </label>
               <input
                 type="text"
                 value={formData.agentName}
                 onChange={(e) => handleInputChange("agentName", e.target.value)}
-                placeholder="e.g., StudyHelper"
-                className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 ${
-                  errors.agentName ? "border-red-500" : "border-gray-300"
-                }`}
+                placeholder="e.g., GlacierOps"
+                className={inputClasses(!!errors.agentName)}
               />
               {errors.agentName && (
-                <p className="text-sm text-red-600 mt-1">{errors.agentName}</p>
+                <p className="mt-1 text-sm text-rose-200">{errors.agentName}</p>
               )}
-              <p className="text-xs text-gray-500 mt-1">
-                Once used, agent names cannot be reused
-              </p>
+              <p className="text-xs text-stone-500 mt-1">3-64 characters, alphanumeric only. Immutable once minted.</p>
             </div>
 
             <div>
-              <label className="block text-sm font-medium mb-2">
+              <label className="text-xs uppercase tracking-[0.4em] text-stone-400">
                 Metadata URI
               </label>
               <input
@@ -235,117 +227,94 @@ export function AgentRegistration({ onAgentRegistered }: AgentRegistrationProps)
                 value={formData.cardURI}
                 onChange={(e) => handleInputChange("cardURI", e.target.value)}
                 placeholder="ipfs://... or https://..."
-                className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 ${
-                  errors.cardURI ? "border-red-500" : "border-gray-300"
-                }`}
+                className={inputClasses(!!errors.cardURI)}
               />
               {errors.cardURI && (
-                <p className="text-sm text-red-600 mt-1">{errors.cardURI}</p>
+                <p className="mt-1 text-sm text-rose-200">{errors.cardURI}</p>
               )}
-              <p className="text-xs text-gray-500 mt-1">
-                URI to JSON metadata containing agent details
-              </p>
+              <p className="text-xs text-stone-500 mt-1">Link to JSON metadata describing the agent.</p>
             </div>
           </div>
 
           {errors.general && (
-            <div className="bg-red-50 border border-red-200 p-3 rounded-lg">
-              <p className="text-sm text-red-700">{errors.general}</p>
+            <div className="rounded-2xl border border-rose-500/30 bg-[#2c0b0f] p-4 text-sm text-rose-100">
+              {errors.general}
             </div>
           )}
 
           {!account ? (
-            <div className="bg-yellow-50 border border-yellow-200 p-3 rounded-lg">
-              <p className="text-sm text-yellow-700">Please connect your wallet to register an agent</p>
+            <div className="rounded-2xl border border-amber-500/30 bg-[#2b1906] p-4 text-sm text-amber-100">
+              Connect your wallet to register an agent.
             </div>
           ) : null}
 
           <Button 
             onClick={handleRegister}
             disabled={!isFormValid || isRegistering}
-            className="w-full bg-gradient-to-r from-red-600 via-red-700 to-red-800 hover:from-red-700 hover:via-red-800 hover:to-red-900 shadow-lg hover:shadow-xl transition-all duration-200"
+            className="w-full rounded-2xl bg-gradient-to-r from-[#b22c2f] via-[#8e1b20] to-[#5f0c10] text-white shadow-lg transition-all hover:shadow-xl disabled:cursor-not-allowed disabled:opacity-60"
           >
             {isRegistering ? (
               <>
                 <Loader2 className="h-5 w-5 mr-2 animate-spin" />
-                <span className="font-semibold">Registering Agent on Avalanche...</span>
+                <span className="font-semibold">Registering on Avalanche...</span>
               </>
             ) : (
               <>
-                <Mountain className="h-5 w-5 mr-2" />
+                <Plus className="h-5 w-5 mr-2" />
                 <span className="font-semibold">Register Agent NFT</span>
               </>
             )}
           </Button>
 
-          {/* Success Message - Right below the button */}
+          {/* Success Message */}
           {registeredAgent && (
-            <div className="mt-4 p-5 bg-gradient-to-r from-green-50 via-emerald-50 to-green-50 border border-green-200 rounded-xl shadow-lg">
-              <div className="flex items-center space-x-3 mb-4">
-                <div className="p-2 bg-gradient-to-br from-green-500 to-emerald-500 rounded-xl">
+            <div className="rounded-3xl border border-emerald-500/20 bg-[#0d1911] p-5 text-stone-100">
+              <div className="flex flex-wrap items-center gap-3">
+                <div className="rounded-2xl bg-gradient-to-br from-emerald-500 to-emerald-600 p-2">
                   <CheckCircle className="h-5 w-5 text-white" />
                 </div>
                 <div>
-                  <span className="font-bold text-green-800">🎉 Registration Successful!</span>
-                  <div className="flex items-center gap-2 mt-1">
-                    <Mountain className="h-3 w-3 text-green-600" />
-                    <span className="text-xs text-green-600">NFT minted on Avalanche</span>
-                  </div>
+                  <p className="text-sm uppercase tracking-[0.3em] text-emerald-200">Success</p>
+                  <p className="text-lg font-semibold text-white">Agent minted on Avalanche</p>
                 </div>
               </div>
-              
-              <div className="space-y-2 text-sm">
-                <div className="flex justify-between">
-                  <span className="text-gray-600">Agent Name:</span>
-                  <span className="font-medium">{registeredAgent.name}</span>
+              <div className="mt-4 space-y-2 text-sm">
+                <div className="flex justify-between text-stone-300">
+                  <span>Agent Name</span>
+                  <span className="font-medium text-white">{registeredAgent.name}</span>
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-600">Agent ID:</span>
-                  <Badge variant="secondary" className="text-xs">{registeredAgent.id}</Badge>
+                <div className="flex justify-between text-stone-300">
+                  <span>Agent ID</span>
+                  <Badge variant="secondary" className="border-none bg-white/10 text-white">
+                    {registeredAgent.id}
+                  </Badge>
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-600">Fee Paid:</span>
-                  <span className="font-medium">0.005 AVAX</span>
-                </div>
-              </div>
-
-              <div className="mt-3 pt-3 border-t border-green-200 space-y-2">
-                <div className="flex justify-between items-center">
-                  <span className="text-xs text-gray-600">Contract:</span>
-                  <a 
-                    href={`https://testnet.snowtrace.io/address/${IDENTITY_REGISTRY_ADDRESS}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded hover:bg-blue-100 border border-blue-200"
-                  >
-                    View Contract →
-                  </a>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-xs text-gray-600">Transaction:</span>
-                  {registeredAgent.snowtraceUrl ? (
-                    <button
-                      onClick={() => window.open(registeredAgent.snowtraceUrl, '_blank')}
-                      className="text-xs bg-gradient-to-r from-blue-500 to-blue-600 text-white px-3 py-1 rounded hover:from-blue-600 hover:to-blue-700 transition-colors"
-                    >
-                      🔍 View on Snowtrace
-                    </button>
-                  ) : (
-                    <a 
-                      href={`https://testnet.snowtrace.io/tx/${registeredAgent.txHash}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded hover:bg-blue-100 border border-blue-200"
-                    >
-                      View on Snowtrace →
-                    </a>
-                  )}
+                <div className="flex justify-between text-stone-300">
+                  <span>Fee Paid</span>
+                  <span className="font-medium text-white">0.005 AVAX</span>
                 </div>
               </div>
-              
-              <div className="mt-3 text-center">
-                <Badge variant="outline" className="text-green-700 border-green-300">
-                  ✓ Ready for Client/Server/Validator roles
+              <div className="mt-4 grid gap-3 text-xs text-stone-300 md:grid-cols-2">
+                <a 
+                  href={`https://testnet.snowtrace.io/address/${IDENTITY_REGISTRY_ADDRESS}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-between rounded-2xl border border-white/10 bg-[#080404] px-4 py-3 text-white hover:border-white/30"
+                >
+                  View contract
+                  <Snowflake className="h-4 w-4" />
+                </a>
+                <button
+                  onClick={() => registeredAgent.snowtraceUrl && window.open(registeredAgent.snowtraceUrl, '_blank')}
+                  className="flex items-center justify-between rounded-2xl border border-white/10 bg-[#080404] px-4 py-3 text-white hover:border-white/30"
+                >
+                  View transaction
+                  <Shield className="h-4 w-4" />
+                </button>
+              </div>
+              <div className="mt-4 text-center">
+                <Badge variant="outline" className="border-emerald-500/40 text-emerald-200">
+                  ✓ Ready for Client / Server / Validator roles
                 </Badge>
               </div>
             </div>
@@ -354,44 +323,34 @@ export function AgentRegistration({ onAgentRegistered }: AgentRegistrationProps)
       </Card>
 
       {/* Registration Process Steps */}
-      <Card>
+      <Card className="border-white/15 bg-[#0f0506]/85 text-white">
         <CardHeader>
-          <CardTitle>Registration Process</CardTitle>
-          <CardDescription>
-            How agent registration works
+          <CardTitle className="text-xl">Registration process</CardTitle>
+          <CardDescription className="erc-panel-description">
+            Ledger steps for anchoring a new agent
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="space-y-4">
-            <div className="flex items-start space-x-3">
-              <div className="w-6 h-6 rounded-full bg-blue-500 text-white text-xs flex items-center justify-center mt-0.5 font-bold">
-                1
+          <div className="space-y-4 text-stone-200">
+            {["Name validation", "Availability check", "NFT issuance"].map((title, index) => (
+              <div key={title} className="flex items-start gap-3">
+                <div className="mt-0.5 flex h-8 w-8 items-center justify-center rounded-2xl border border-white/15 bg-white/5 text-sm font-semibold">
+                  {index + 1}
+                </div>
+                <div>
+                  <p className="font-semibold text-white">{title}</p>
+                  {index === 0 && (
+                    <p className="text-sm text-stone-400">Confirm 3-64 characters, alphanumeric only.</p>
+                  )}
+                  {index === 1 && (
+                    <p className="text-sm text-stone-400">Ensure the agent name is globally unique.</p>
+                  )}
+                  {index === 2 && (
+                    <p className="text-sm text-stone-400">Pay 0.005 AVAX to mint identity inside IdentityRegistry.</p>
+                  )}
+                </div>
               </div>
-              <div>
-                <p className="font-medium">Name Validation</p>
-                <p className="text-sm text-gray-600">Check 3-64 characters, alphanumeric only constraints</p>
-              </div>
-            </div>
-
-            <div className="flex items-start space-x-3">
-              <div className="w-6 h-6 rounded-full bg-blue-500 text-white text-xs flex items-center justify-center mt-0.5 font-bold">
-                2
-              </div>
-              <div>
-                <p className="font-medium">Availability Check</p>
-                <p className="text-sm text-gray-600">Check if the agent name is available</p>
-              </div>
-            </div>
-
-            <div className="flex items-start space-x-3">
-              <div className="w-6 h-6 rounded-full bg-blue-500 text-white text-xs flex items-center justify-center mt-0.5 font-bold">
-                3
-              </div>
-              <div>
-                <p className="font-medium">NFT Issuance</p>
-                <p className="text-sm text-gray-600">Register agent in IdentityRegistry with 0.005 AVAX fee</p>
-              </div>
-            </div>
+            ))}
           </div>
         </CardContent>
       </Card>
