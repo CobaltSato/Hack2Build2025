@@ -256,7 +256,7 @@ export function DetailedEvaluation({ agentId, agentName, onClose }: DetailedEval
           try {
             const result = await readContract({
               contract: identityContract,
-              method,
+              method: method as `function ${string}`,
               params: [tokenIdBigInt],
             });
             
