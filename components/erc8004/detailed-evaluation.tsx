@@ -162,7 +162,7 @@ export function DetailedEvaluation({ agentId, agentName, onClose }: DetailedEval
           contractDataResults.totalSupply = Number(totalSupply);
           console.log(`✅ Total supply: ${totalSupply} tokens`);
         } catch (e) {
-          console.log(`ℹ️ totalSupply() not available: ${e.message}`);
+          console.log(`ℹ️ totalSupply() not available: ${e instanceof Error ? e.message : String(e)}`);
         }
 
         // Now try to read specific token data
