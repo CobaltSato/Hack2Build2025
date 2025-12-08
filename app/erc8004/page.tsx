@@ -42,27 +42,22 @@ const CONTRACTS = {
   ValidationRegistry: "0x3f15823aB159D46F9aA5E90A26E3Bbb1Cd84D45B",
 } as const;
 
-// Sample data for demonstration  
-const SAMPLE_AGENTS = [
-  { id: 1, name: "Study Helper AI", domain: "study-helper", owner: "0x1234...5678", type: "Education" },
-  { id: 2, name: "Translator Pro", domain: "translator-pro", owner: "0x2345...6789", type: "Language" },
-  { id: 3, name: "Math Teacher AI", domain: "math-teacher", owner: "0x3456...7890", type: "Education" },
-  { id: 4, name: "Code Mentor", domain: "code-mentor", owner: "0x4567...8901", type: "Technical" },
-  { id: 5, name: "Art Critic AI", domain: "art-critic", owner: "0x5678...9012", type: "Arts" },
+// Agent data for TokenIDs 61-65 (JSON management)
+const AGENTS_61_TO_65 = [
+  { id: 61, name: "Agent61", domain: "agent61", owner: "0x1234...5678", type: "AI" },
+  { id: 62, name: "Agent62", domain: "agent62", owner: "0x2345...6789", type: "AI" },
+  { id: 63, name: "Agent63", domain: "agent63", owner: "0x3456...7890", type: "AI" },
+  { id: 64, name: "Agent64", domain: "agent64", owner: "0x4567...8901", type: "AI" },
+  { id: 65, name: "Agent65", domain: "agent65", owner: "0x5678...9012", type: "AI" },
 ];
 
-const SAMPLE_VALIDATIONS = [
-  { id: 1, validator: "Math Teacher AI", server: "Study Helper AI", status: "Completed", score: 95, reward: "0.005 AVAX" },
-  { id: 2, validator: "Translator Pro", server: "Code Mentor", status: "Pending", score: null, reward: "0.008 AVAX" },
-  { id: 3, validator: "Art Critic AI", server: "Translator Pro", status: "Expired", score: null, reward: "0.003 AVAX" },
-];
 
 export default function ERC8004Page() {
   const wallet = useActiveWallet();
   const account = useActiveAccount();
   const [activeTab, setActiveTab] = useState("overview");
   const [userAgents, setUserAgents] = useState<number[]>([]);
-  const [registeredAgents, setRegisteredAgents] = useState(SAMPLE_AGENTS);
+  const [registeredAgents, setRegisteredAgents] = useState(AGENTS_61_TO_65);
   const [selectedAgentForEvaluation, setSelectedAgentForEvaluation] = useState<{
     id: string;
     name: string;
@@ -71,8 +66,8 @@ export default function ERC8004Page() {
   // Mock data for user's agents (normally would come from contract)
   useEffect(() => {
     if (account?.address) {
-      // Simulate user owning agents 1 and 3
-      setUserAgents([1, 3]);
+      // Simulate user owning agents 61 and 63 from the current range
+      setUserAgents([61, 63]);
     }
   }, [account?.address]);
 

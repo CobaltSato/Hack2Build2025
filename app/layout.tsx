@@ -3,8 +3,8 @@ import { ThirdwebProvider } from "thirdweb/react";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "x402 Starter Kit",
-  description: "HTTP 402 payment integration with Thirdweb",
+  title: "Trustless Agents",
+  description: "ERC-8004 Trustless Agent Protocol with on-chain evaluation system",
 };
 
 export default function RootLayout({

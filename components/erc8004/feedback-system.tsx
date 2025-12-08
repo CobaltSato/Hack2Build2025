@@ -7,7 +7,7 @@ import { wrapFetchWithPayment } from "thirdweb/x402";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Star, CreditCard, CheckCircle, Loader2, AlertCircle, DollarSign, Mountain, Snowflake, Search, Shield } from "lucide-react";
+import { Star, CreditCard, CheckCircle, Loader2, AlertCircle, DollarSign, Mountain, Snowflake, Search, Shield, ExternalLink } from "lucide-react";
 import { createNormalizedFetch } from "@/lib/payment";
 import { AVALANCHE_FUJI_CHAIN_ID, PAYMENT_AMOUNTS } from "@/lib/constants";
 import { avalancheFuji } from "thirdweb/chains";
@@ -605,6 +605,81 @@ export function FeedbackSystem({ agents = [] }: FeedbackSystemProps) {
 
   return (
     <div className="space-y-6">
+      {/* Whitelist Requirements */}
+      <Card className="bg-gradient-to-r from-yellow-50 to-orange-50 border-yellow-200 shadow-lg">
+        <CardHeader className="bg-gradient-to-r from-yellow-500/10 to-orange-500/10 border-b border-yellow-200">
+          <CardTitle className="flex items-center space-x-3">
+            <div className="p-2 bg-gradient-to-br from-yellow-500 to-orange-500 rounded-xl">
+              <Shield className="h-5 w-5 text-white" />
+            </div>
+            <div>
+              <span className="text-yellow-800">⚠️ Feedback Submission Requirements</span>
+              <div className="flex items-center gap-2 mt-1">
+                <Mountain className="h-3 w-3 text-yellow-500" />
+                <span className="text-xs text-yellow-600 font-medium">ERC-8004 Trustless Agent Protocol</span>
+              </div>
+            </div>
+          </CardTitle>
+          <CardDescription className="text-yellow-700">
+            Important requirements for submitting feedback in the ERC-8004 system
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="bg-yellow-100 p-4 rounded-lg border border-yellow-300">
+            <div className="flex items-center space-x-2 mb-3">
+              <Shield className="h-4 w-4 text-yellow-700" />
+              <span className="font-bold text-yellow-900">Whitelist Required</span>
+            </div>
+            <p className="text-sm text-yellow-800 mb-3">
+              <strong>Your wallet address must be whitelisted</strong> to submit feedback in the ERC-8004 ReputationRegistry.
+            </p>
+            
+            <div className="space-y-2 mb-4">
+              <p className="text-xs text-yellow-700 font-medium">Submission Requirements:</p>
+              <div className="grid md:grid-cols-2 gap-2 text-xs text-yellow-700">
+                <div className="space-y-1">
+                  <div className="flex items-center space-x-1">
+                    <CheckCircle className="h-3 w-3 text-green-600" />
+                    <span>Your address must be whitelisted by an admin</span>
+                  </div>
+                  <div className="flex items-center space-x-1">
+                    <CheckCircle className="h-3 w-3 text-green-600" />
+                    <span>Server agent must have authorized your client agent via acceptFeedback()</span>
+                  </div>
+                  <div className="flex items-center space-x-1">
+                    <CheckCircle className="h-3 w-3 text-green-600" />
+                    <span>Both client and server agents must exist in IdentityRegistry</span>
+                  </div>
+                </div>
+                <div className="space-y-1">
+                  <div className="flex items-center space-x-1">
+                    <CheckCircle className="h-3 w-3 text-green-600" />
+                    <span>Score must be between 0-100</span>
+                  </div>
+                  <div className="flex items-center space-x-1">
+                    <CheckCircle className="h-3 w-3 text-green-600" />
+                    <span>No duplicate feedback (one feedback per client-server pair)</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex items-center justify-between pt-3 border-t border-yellow-300">
+              <span className="text-xs text-yellow-700">Need whitelist access?</span>
+              <a 
+                href="https://docs.google.com/forms/d/e/1FAIpQLSdE444WHE3jwD9-NigY03ngfQ-A332GrGsRuKUNrxkxpGtG_w/viewform?usp=dialog"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center space-x-2 bg-gradient-to-r from-yellow-600 to-orange-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:from-yellow-700 hover:to-orange-700 transition-all shadow-md hover:shadow-lg"
+              >
+                <span>📝 Apply for Whitelist</span>
+                <ExternalLink className="h-3 w-3" />
+              </a>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
       {/* Real Agent Lookup Section */}
       <Card className="bg-gradient-to-br from-blue-500/5 to-blue-600/10 border-blue-200">
         <CardHeader className="bg-gradient-to-r from-blue-500/5 to-blue-600/5 border-b border-blue-200">
