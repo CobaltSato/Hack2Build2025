@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { createThirdwebClient, getContract, readContract } from "thirdweb";
+import { createThirdwebClient, getContract, readContract, prepareContractCall } from "thirdweb";
 import { useActiveWallet } from "thirdweb/react";
 import { wrapFetchWithPayment } from "thirdweb/x402";
 import { avalancheFuji } from "thirdweb/chains";
@@ -254,11 +254,12 @@ export function DetailedEvaluation({ agentId, agentName, onClose }: DetailedEval
 
         for (const {name, method, parse} of abi_methods) {
           try {
-            const result = await readContract({
+            const call = prepareContractCall({
               contract: identityContract,
               method: method as `function ${string}`,
               params: [tokenIdBigInt],
             });
+            const result = await readContract(call);
             
             parse(result);
             console.log(`✅ ${name} successful:`, result);
