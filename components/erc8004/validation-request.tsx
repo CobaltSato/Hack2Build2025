@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { createThirdwebClient, getContract, prepareContractCall, readContract } from "thirdweb";
 import { useActiveWallet, useActiveAccount, useSendTransaction } from "thirdweb/react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -16,8 +16,7 @@ import {
   Search,
   Send,
   Award,
-  User,
-  Hash
+  User
 } from "lucide-react";
 import { avalancheFuji } from "thirdweb/chains";
 
@@ -26,7 +25,7 @@ const client = createThirdwebClient({
 });
 
 // Contract addresses (Fuji Testnet)
-const VALIDATION_REGISTRY_ADDRESS = "0x3f15823aB159D46F9aA5E90A26E3Bbb1Cd84D45B";
+const VALIDATION_REGISTRY_ADDRESS = "0x488b53ef50aeB8ae97dE7Bb31C06Fa5e8024ed94";
 const IDENTITY_REGISTRY_ADDRESS = "0x96eF5c6941d5f8dfB4a39F44E9238b85F01F4d29";
 
 // Use standard contract without custom ABI to avoid type issues
@@ -230,30 +229,51 @@ export function ValidationRequest() {
     }
   };
 
-  // Generate data hash from original data using Web Crypto API
+  // Generate data hash and call server API for signature
   const generateDataHash = async () => {
     if (!formData.originalData.trim()) {
       alert("Please enter original data");
       return;
     }
 
+    if (!formData.validatorId || !formData.serverId) {
+      alert("Please enter both Validator ID and Server ID first");
+      return;
+    }
+
     try {
-      // Convert string to ArrayBuffer
-      const encoder = new TextEncoder();
-      const data = encoder.encode(formData.originalData);
+      // Call server API to process validation request
+      const response = await fetch('/api/validation-request', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          originalData: formData.originalData,
+          validatorId: formData.validatorId,
+          serverId: formData.serverId,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to process validation request');
+      }
+
+      const result = await response.json();
       
-      // Generate SHA-256 hash
-      const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-      
-      // Convert to hex string
-      const hashArray = Array.from(new Uint8Array(hashBuffer));
-      const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-      const hash = "0x" + hashHex;
-      
-      setFormData(prev => ({ ...prev, dataHash: hash }));
+      if (result.success) {
+        setFormData(prev => ({ ...prev, dataHash: result.dataHash }));
+        console.log('Server verification completed:', {
+          dataHash: result.dataHash,
+          messageHash: result.messageHash,
+          timestamp: result.timestamp
+        });
+      } else {
+        throw new Error(result.error || 'Server processing failed');
+      }
     } catch (error) {
       console.error('Hash generation error:', error);
-      alert('Failed to generate hash');
+      alert('Failed to generate hash: ' + (error instanceof Error ? error.message : 'Unknown error'));
     }
   };
 
@@ -353,10 +373,39 @@ export function ValidationRequest() {
 
       const rewardAmountWei = BigInt(Math.floor(parseFloat(formData.rewardAmount) * 1e18).toString());
 
+      // Call server API to get signed data hash
+      const apiResponse = await fetch('/api/validation-request', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          originalData: formData.originalData,
+          validatorId: formData.validatorId,
+          serverId: formData.serverId,
+        }),
+      });
+
+      if (!apiResponse.ok) {
+        throw new Error('Failed to get signed validation request from server');
+      }
+
+      const apiResult = await apiResponse.json();
+      if (!apiResult.success) {
+        throw new Error(apiResult.error || 'Server validation failed');
+      }
+
+      // Use server-provided signature
+      console.log('Server API response:', apiResult);
+      
+      if (!apiResult.signature) {
+        throw new Error('No signature received from server');
+      }
+
       const transaction = prepareContractCall({
         contract: validationContract,
-        method: "function validationRequest(uint256 agentValidatorId, uint256 agentServerId, bytes32 dataHash) external payable",
-        params: [BigInt(formData.validatorId), BigInt(formData.serverId), formData.dataHash as `0x${string}`],
+        method: "function validationRequest(uint256 agentValidatorId, uint256 agentServerId, bytes32 dataHash, bytes calldata signature) external payable",
+        params: [BigInt(formData.validatorId), BigInt(formData.serverId), apiResult.dataHash as `0x${string}`, apiResult.signature],
         value: rewardAmountWei,
       });
 
@@ -696,7 +745,7 @@ export function ValidationRequest() {
                 <Button
                   onClick={generateDataHash}
                   type="button"
-                  disabled={!formData.originalData.trim()}
+                  disabled={!formData.originalData.trim() || !formData.validatorId || !formData.serverId}
                   className="bg-green-600 hover:bg-green-700 text-white"
                 >
                   🔐 Generate Hash
@@ -710,18 +759,18 @@ export function ValidationRequest() {
                   <strong>💡 What is a Data Hash?</strong>
                 </p>
                 <p className="text-xs text-blue-600 mb-2">
-                  SHA-256 encrypted version of original data. Keeps original data secret while allowing validators to verify it's the same data.
+                  SHA-256 encrypted version of original data. Server verifies and signs the hash for security.
                   Only this hash is recorded on blockchain, not the original data.
                 </p>
                 <div className="space-y-2">
-                  <p className="text-xs text-orange-600">
-                    ⚠️ <strong>Notice:</strong> Data hash may require pre-approval by administrators.
-                    Validation requests with unapproved hashes will fail.
+                  <p className="text-xs text-green-600">
+                    ✅ <strong>Server Verification:</strong> Data hash is generated and verified server-side using SIGNER_KEY.
+                    This ensures data integrity and authenticity.
                   </p>
-                  <div className="p-2 bg-yellow-50 border border-yellow-200 rounded">
-                    <p className="text-xs text-yellow-700">
-                      🚧 <strong>Implementation Status:</strong> Current contract version requires data hash pre-approval functionality.
-                      If there are input issues, 0xbeab6e29 or 0xa6ce15f6 errors may occur.
+                  <div className="p-2 bg-green-50 border border-green-200 rounded">
+                    <p className="text-xs text-green-700">
+                      🔐 <strong>Security Flow:</strong> 
+                      1. Enter Validator/Server IDs → 2. Enter original data → 3. Generate server-signed hash → 4. Submit validation request
                     </p>
                   </div>
                 </div>

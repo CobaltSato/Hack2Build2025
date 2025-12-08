@@ -29,7 +29,7 @@ const client = createThirdwebClient({
 });
 
 // Contract addresses (Fuji Testnet)
-const VALIDATION_REGISTRY_ADDRESS = "0x3f15823aB159D46F9aA5E90A26E3Bbb1Cd84D45B";
+const VALIDATION_REGISTRY_ADDRESS = "0x488b53ef50aeB8ae97dE7Bb31C06Fa5e8024ed94";
 const IDENTITY_REGISTRY_ADDRESS = "0x96eF5c6941d5f8dfB4a39F44E9238b85F01F4d29";
 
 const validationContract = getContract({
@@ -228,24 +228,31 @@ export function ValidatorRegistration() {
     }
 
     try {
-      const validatorData = await readContract({
+      // Get validator active status
+      const isActive = await readContract({
         contract: validationContract,
-        method: "function getValidatorInfo(uint256 validatorId) external view returns (uint256, bool, uint256, uint256)",
+        method: "function isValidatorActive(uint256 validatorId) external view returns (bool)",
         params: [BigInt(validatorId)],
       });
 
-      const [stakedAmount, isActive, validationsCompleted, reputationScore] = validatorData;
+      // Get validator stake info
+      const [stakedAmount] = await readContract({
+        contract: validationContract,
+        method: "function getValidatorStake(uint256 validatorId) external view returns (uint256 staked, uint256 locked, uint256 available)",
+        params: [BigInt(validatorId)],
+      });
 
       const validator: ValidatorInfo = {
         validatorId: parseInt(validatorId),
         stakedAmount: (stakedAmount as bigint).toString(),
         isActive: isActive as boolean,
-        validationsCompleted: Number(validationsCompleted),
-        successRate: Number(reputationScore), // Assuming this represents success rate
+        validationsCompleted: 0, // This info would need a separate tracking mechanism
+        successRate: 100, // Default success rate
       };
 
       setValidatorInfo(validator);
     } catch (error) {
+      console.error('Error looking up validator info:', error);
       // Validator not registered yet
       setValidatorInfo(null);
     }

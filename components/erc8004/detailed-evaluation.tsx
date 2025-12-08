@@ -38,7 +38,7 @@ const client = createThirdwebClient({
 const CONTRACTS = {
   IdentityRegistry: "0x96eF5c6941d5f8dfB4a39F44E9238b85F01F4d29",
   ReputationRegistry: "0x7Bf906F3ae121c4a3a6b0F17abB2f445B4171015",
-  ValidationRegistry: "0x3f15823aB159D46F9aA5E90A26E3Bbb1Cd84D45B",
+  ValidationRegistry: "0x6886699742268F1d1d7bEd7a9c65c6a26937ECc5",
 } as const;
 
 // Get contract instances

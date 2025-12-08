@@ -39,7 +39,7 @@ const client = createThirdwebClient({
 const CONTRACTS = {
   IdentityRegistry: "0x96eF5c6941d5f8dfB4a39F44E9238b85F01F4d29",
   ReputationRegistry: "0x7Bf906F3ae121c4a3a6b0F17abB2f445B4171015",
-  ValidationRegistry: "0x3f15823aB159D46F9aA5E90A26E3Bbb1Cd84D45B",
+  ValidationRegistry: "0x488b53ef50aeB8ae97dE7Bb31C06Fa5e8024ed94",
 } as const;
 
 // Agent data for TokenIDs 61-65 (JSON management)
@@ -265,7 +265,7 @@ export default function ERC8004Page() {
                           <Shield className="h-4 w-4 text-green-600" />
                           <span className="font-semibold text-green-800">Validation Registry</span>
                         </div>
-                        <code className="text-xs text-green-600 break-all">0x3f15823aB159D46F9aA5E90A26E3Bbb1Cd84D45B</code>
+                        <code className="text-xs text-green-600 break-all">0x488b53ef50aeB8ae97dE7Bb31C06Fa5e8024ed94</code>
                       </div>
                     </div>
                   </div>
